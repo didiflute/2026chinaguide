@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>古都走廊 · 旅行攻略</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="旅行攻略">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#F0EDE4">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Zen Maru Gothic','Noto Sans SC',system-ui,sans-serif;background:#F0EDE4;color:#2C2C2C;line-height:1.7;font-size:16px;-webkit-font-smoothing:antialiased}
+.W{max-width:480px;margin:0 auto;background:#FBF9F4;min-height:100vh}
+.hdr{text-align:center;padding:28px 16px 20px;background:linear-gradient(180deg,#F0EDE4,#FBF9F4)}
+.hdr h1{font-size:24px;font-weight:700;color:#3A5C6E;letter-spacing:2px}
+.hdr p{font-size:11px;color:#9A8E7A;margin-top:4px;letter-spacing:4px}
+/* City tabs */
+.ct{display:flex;justify-content:center;gap:5px;padding:0 12px 14px;flex-wrap:wrap}
+.ctb{padding:6px 14px;font-size:13px;font-weight:500;border-radius:16px;border:1.5px solid #E8E4DA;color:#9A8E7A;background:#fff;cursor:pointer;font-family:inherit;transition:all .2s}
+.ctb.a{background:#3A5C6E;color:#fff;border-color:#3A5C6E}
+.cp{display:none}.cp.a{display:block}
+/* Sub tabs */
+.st{display:flex;padding:0 16px;border-bottom:1px solid #E8E4DA;position:sticky;top:0;z-index:10;background:#FBF9F4}
+.stb{padding:10px 20px;font-size:14px;font-weight:500;color:#9A8E7A;background:none;border:none;border-bottom:2.5px solid transparent;cursor:pointer;font-family:inherit}
+.stb.a{color:#3A5C6E;border-bottom-color:#C4923A}
+.sp{display:none}.sp.a{display:block}
+/* Day tabs */
+.dtb{display:flex;gap:6px;padding:14px 16px 6px;overflow-x:auto;scrollbar-width:none}
+.dtb::-webkit-scrollbar{display:none}
+.dt{flex-shrink:0;padding:6px 16px;font-size:12px;font-weight:700;border-radius:14px;border:1.5px solid #E8E4DA;color:#9A8E7A;background:#fff;cursor:pointer;font-family:inherit}
+.dt.a{background:#C4923A;color:#fff;border-color:#C4923A}
+.dp{display:none;padding:0 14px 24px}.dp.a{display:block}
+.di{padding:8px 2px 14px}
+.dd{font-size:13px;color:#9A8E7A}
+.dtt{font-size:17px;font-weight:700;color:#3A5C6E;margin-top:2px}
+/* Cards */
+.cs{display:flex;flex-direction:column;gap:10px}
+.c{background:#fff;border-radius:14px;border:1px solid #EAE6DD;padding:14px 16px;position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .1s}
+.c:active{transform:scale(.98)}
+.cti{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;margin-bottom:8px;color:#fff;background:#3A5C6E}
+.cti.f{background:#C4923A}.cti.r{background:#9A8E7A}
+.cn{font-size:16px;font-weight:700;line-height:1.4;padding-right:24px}
+.ce{font-size:13px;color:#9A8E7A;margin-top:2px}
+.cb{font-size:14px;color:#5A5A5A;margin-top:6px;line-height:1.6}
+.tg{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.t{font-size:11px;padding:3px 8px;border-radius:8px;font-weight:500}
+.tp{background:#FFF3E0;color:#9A7220}.ti{background:#E8F4F8;color:#3A5C6E}.tt{background:#F0E8F5;color:#6B4E8A}.tw{background:#FDE8E8;color:#8B3A3A}
+.ca{position:absolute;right:14px;top:42px;font-size:12px;color:#9A8E7A;transition:transform .2s}
+.c.o .ca{transform:rotate(90deg)}
+.cd{display:none;margin-top:10px}.c.o .cd{display:block}
+.dx{padding:12px;background:#FAFAF6;border-radius:10px;border:.5px dashed #E8E4DA;font-size:14px;color:#5A5A5A;line-height:1.7;margin-bottom:8px}
+.dx:last-child{margin-bottom:0}
+.dx p{margin-bottom:6px}.dx p:last-child{margin-bottom:0}
+.tip{background:#FFF8EB;border-left:3px solid #C4923A;border-radius:0 10px 10px 0;padding:10px 12px;margin-top:8px;font-size:14px;color:#6B5A3A;line-height:1.7}
+.tpl{font-size:11px;font-weight:700;color:#C4923A;margin-bottom:3px;letter-spacing:1px}
+.fi2{background:#FBF7EF;border:.5px solid #FFF3E0;border-radius:10px;padding:10px 12px;margin-top:8px;font-size:14px;color:#5A5A5A;line-height:1.7}
+.fil{font-size:11px;font-weight:700;color:#C4923A;margin-bottom:3px}
+.df{text-align:center;padding:14px 0 4px;margin-top:10px;border-top:1px dashed #E8E4DA;font-size:13px;color:#9A8E7A}
+.stars{color:#C4923A;font-weight:700}
+/* Overview */
+.ov{padding:16px 14px 24px}
+.ov h2{font-size:18px;font-weight:700;color:#3A5C6E;margin-bottom:12px}
+.sb{background:#fff;border-radius:12px;border:1px solid #EAE6DD;padding:16px;margin-bottom:16px;font-size:15px;color:#5A5A5A;line-height:1.8}
+.sz{font-weight:700;color:#3A5C6E;font-size:16px;margin-bottom:6px}
+.se{font-size:14px;color:#9A8E7A;font-style:italic}
+.oc{background:#fff;border-radius:12px;border:1px solid #EAE6DD;overflow:hidden;margin-bottom:14px}
+.ot{width:100%;border-collapse:collapse;font-size:14px}
+.ot th{text-align:left;padding:10px;background:#3A5C6E;color:#fff;font-weight:500;font-size:12px}
+.ot td{padding:10px;border-bottom:.5px solid #E8E4DA}
+.ot tr:last-child td{border-bottom:none}
+.on{font-size:13px;color:#9A8E7A;margin-top:8px;line-height:1.7}
+/* Food checklist */
+.fw{padding:12px 14px 24px}
+.fov{font-size:14px;color:#5A5A5A;padding:12px;background:#fff;border-radius:12px;border:1px solid #EAE6DD;margin-bottom:14px;line-height:1.7}
+.prg{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:10px 12px;background:#fff;border-radius:12px;border:1px solid #EAE6DD}
+.prg-bar{flex:1;height:8px;background:#EAE6DD;border-radius:4px;overflow:hidden}
+.prg-fill{height:100%;border-radius:4px;background:#C4923A;transition:width .3s}
+.prg-txt{font-size:13px;color:#9A8E7A;font-weight:700;min-width:65px;text-align:right}
+.fcat{font-size:16px;font-weight:700;color:#3A5C6E;padding:14px 0 6px;border-bottom:1px solid #E8E4DA}
+.fcat:first-of-type{padding-top:4px}
+.food{background:#fff;border-radius:12px;border:1px solid #EAE6DD;margin:6px 0;overflow:hidden;transition:all .15s}
+.food.chk{border-color:#E8D5A8;background:#FFFBF2}
+.food-top{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ck{width:22px;height:22px;border-radius:50%;border:2px solid #D4CFC4;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#fff;transition:all .15s}
+.food.chk .ck{background:#C4923A;border-color:#C4923A}
+.food.chk .ck::after{content:"";display:block;width:6px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);margin-top:-2px}
+.food-info{flex:1;min-width:0}
+.fn{font-size:15px;font-weight:700;color:#2C2C2C}
+.fen{font-size:12px;color:#9A8E7A;margin-top:1px}
+.food.chk .fn{color:#6B5A3A}
+.fa{font-size:11px;color:#C4B89A;transition:transform .2s;flex-shrink:0}
+.food.exp .fa{transform:rotate(90deg)}
+.food-det{display:none;border-top:.5px dashed #EAE6DD;padding:8px 12px 10px}
+.food.exp .food-det{display:block}
+.shop{padding:6px 0;border-bottom:.5px dashed #F0EDE4}
+.shop:last-of-type{border-bottom:none}
+.sht{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.shn{font-size:13px;font-weight:600}.shd{font-size:12px;color:#9A8E7A;margin-top:1px;line-height:1.4}.shp{font-size:12px;color:#C4923A;font-weight:700;flex-shrink:0}
+.fnote{font-size:12px;color:#6B5A3A;background:#FFF8EB;border-radius:8px;padding:6px 10px;margin-top:6px;line-height:1.5}
+.mn{margin-top:8px;padding-top:8px;border-top:1px solid #EAE6DD}
+.mnl{font-size:11px;font-weight:700;color:#C4923A;margin-bottom:4px}
+.me{display:flex;align-items:center;gap:6px;padding:4px 8px;margin:3px 0;background:#FFF8EB;border-radius:8px;font-size:13px;color:#5A5A5A}
+.met{flex:1}.med{width:18px;height:18px;border-radius:50%;border:none;background:#EAE6DD;color:#9A8E7A;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nir{display:flex;gap:6px}
+.ni{flex:1;padding:6px 10px;border:1px solid #EAE6DD;border-radius:8px;font-size:13px;font-family:inherit;background:#fff;color:#2C2C2C;outline:none}
+.ni:focus{border-color:#C4923A}.ni::placeholder{color:#C4B89A}
+.nb{padding:6px 12px;border:none;border-radius:8px;background:#C4923A;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0}
+.ctag{display:inline-block;font-size:10px;padding:2px 6px;border-radius:6px;background:#E8F4F8;color:#3A5C6E;font-weight:500;margin-left:4px}
+.fdel{width:20px;height:20px;border-radius:50%;border:none;background:none;color:#D4CFC4;font-size:14px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.fdel:hover{color:#8B3A3A;background:#FDE8E8}
+.af{margin-top:10px;background:#fff;border-radius:12px;border:1.5px dashed #D4CFC4;padding:12px}
+.afb{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;cursor:pointer;color:#9A8E7A;font-size:14px;font-weight:500}
+.afp{width:24px;height:24px;border-radius:50%;background:#EAE6DD;display:flex;align-items:center;justify-content:center;font-size:16px;color:#9A8E7A;font-weight:700}
+.aff{display:none}.af.open .afb{display:none}.af.open .aff{display:block}
+.afr{margin-bottom:8px}
+.afr label{font-size:12px;font-weight:700;color:#3A5C6E;display:block;margin-bottom:3px}
+.afi{width:100%;padding:8px 10px;border:1px solid #EAE6DD;border-radius:8px;font-size:14px;font-family:inherit;background:#fff;outline:none}
+.afi:focus{border-color:#C4923A}.afi::placeholder{color:#C4B89A}
+.afa{display:flex;gap:8px;justify-content:flex-end}
+.afc{padding:6px 14px;border:1px solid #EAE6DD;border-radius:8px;background:none;color:#9A8E7A;font-size:13px;cursor:pointer;font-family:inherit}
+.afs{padding:6px 14px;border:none;border-radius:8px;background:#3A5C6E;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.far{font-size:16px;font-weight:700;color:#C4923A;padding:16px 0 6px;border-bottom:1px solid #E8E4DA}
+.nav-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;background:#E8F4F8;color:#3A5C6E;border:1px solid #C8E4EE;margin-top:6px;margin-right:4px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.nav-btn:active{transform:scale(.95);background:#D0E8F0}
+.shop-nav{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;border:1px solid #C8E4EE;background:#E8F4F8;color:#3A5C6E;flex-shrink:0;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.shop-nav:active{background:#D0E8F0}
+.ph{text-align:center;padding:60px 16px;color:#9A8E7A}
+.phi{font-size:32px;margin-bottom:8px}.pht{font-size:16px;font-weight:700;color:#5A5A5A}
+.wx{display:flex;gap:10px;margin:12px 16px;padding:12px 14px;background:#E8F4F8;border-radius:12px;border:1px solid #C8E4EE;align-items:center}
+.wx-icon{font-size:28px;flex-shrink:0}
+.wx-info{flex:1;min-width:0}
+.wx-temp{font-size:15px;font-weight:700;color:#3A5C6E}
+.wx-tip{font-size:12px;color:#5A7A8A;margin-top:2px;line-height:1.5}
+@media(max-width:380px){.ctb{padding:5px 10px;font-size:12px}.cn{font-size:15px}}
+</style>
+</head>
+<body>
+<div class="W">
+<div class="hdr"><h1>古都走廊</h1><p>ANCIENT CAPITALS · TRAVEL GUIDE</p></div>
+<div class="ct">
+<button class="ctb a" data-city="overview">总览</button>
+<button class="ctb" data-city="xian">西安</button>
+<button class="ctb" data-city="luoyang">洛阳</button>
+<button class="ctb" data-city="kaifeng">开封</button>
+<button class="ctb" data-city="datong">大同</button>
+<button class="ctb" data-city="beijing">北京</button>
+</div>
+
+<!-- OVERVIEW -->
+<div class="cp a" id="p-overview"><div class="ov">
+<h2>给孩子讲的故事线 Story for Kids</h2>
+<div class="sb"><div class="sz">「我们要从中国最古老的首都，一路走到最后一个首都。每到一个城市，就往前跳几百年。就像坐时光机一样。」</div><div class="se">"We're traveling from China's oldest capital to the last one. Every city, we jump forward hundreds of years — like a time machine."</div></div>
+<h2>交通衔接 Transport</h2>
+<div class="oc"><table class="ot"><thead><tr><th>路段 Route</th><th>方式</th><th>时间</th><th>价格</th></tr></thead><tbody>
+<tr><td>重庆→西安<br><small style="color:#9A8E7A">CQ→Xi'an</small></td><td>飞机 Flight</td><td>~1.5h</td><td>¥500-800</td></tr>
+<tr><td>西安→洛阳<br><small style="color:#9A8E7A">→Luoyang</small></td><td>高铁 HSR</td><td>1.5-2h</td><td>¥175-230</td></tr>
+<tr><td>洛阳→开封<br><small style="color:#9A8E7A">→Kaifeng</small></td><td>高铁via郑州</td><td>1-1.5h</td><td>¥100-150</td></tr>
+<tr><td>开封→大同<br><small style="color:#9A8E7A">→Datong</small></td><td>高铁via太原</td><td>5-6h⚠</td><td>¥400-500</td></tr>
+<tr><td>大同→北京<br><small style="color:#9A8E7A">→Beijing</small></td><td>高铁 HSR</td><td>~1h42m</td><td>¥150-200</td></tr>
+</tbody></table></div>
+<div class="on">⚠ 开封→大同最长段（换乘两次），带iPad/零食/充电宝。Kaifeng→Datong longest leg (2 transfers). Pack entertainment.</div>
+</div></div>
+
+<!-- XI'AN -->
+<div class="cp" id="p-xian">
+<div class="st"><button class="stb a" data-sub="xian-it">行程 Itinerary</button><button class="stb" data-sub="xian-fd">美食打卡 Food</button></div>
+
+<div class="sp a" id="sp-xian-it">
+<div class="wx" id="wx-xian"><div class="wx-icon">⏳</div><div class="wx-info"><div class="wx-temp">西安天气加载中... Loading Xi'an weather...</div><div class="wx-tip"></div></div></div>
+<div class="dtb"><button class="dt a" data-day="x1">DAY 1</button><button class="dt" data-day="x2">DAY 2</button><button class="dt" data-day="x3">DAY 3</button></div>
+
+<!-- DAY 1 -->
+<div class="dp a" id="dp-x1"><div class="di"><div class="dd">6/23 周二 Tuesday</div><div class="dtt">到达西安 · Arrive in Xi'an</div></div><div class="cs">
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">上午 AM</span><span class="ca">▶</span><div class="cn">重庆飞西安</div><div class="ce">Chongqing → Xi'an · Direct ~1.5h</div><div class="cb">抵达后入住 Check in after arrival</div><div class="cd"><div class="dx"><p>建议住南门/城墙附近，方便后两天动线。Stay near South Gate for best access to next 2 days.</p></div></div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">下午 PM</span><span class="ca">▶</span><div class="cn">永兴坊 Yongxingfang</div><div class="ce">陕西非遗美食街区 Shaanxi Heritage Food Street</div><div class="cb">小份多买每样尝! Buy small portions of everything!</div><div class="tg"><span class="t tp">免费 Free</span><span class="t ti">城墙中山门内 Zhongshan Gate</span></div><div class="cd" data-nav="永兴坊"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=34.265920,108.960440&title=永兴坊&content=永兴坊&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到永兴坊 Navigate</a></div>
+<div class="dx"><p>唐代108坊之一，魏征府邸旧址。按陕西三大地理区域分区，每个摊位代表一个地方的非遗美食。<br>One of 108 Tang Dynasty blocks, former Wei Zheng residence. Organized by 3 Shaanxi regions.</p><p>⚠ 有些摊位游客化，但整体还行。Some stalls touristy, but overall still good.</p></div>
+<div class="tip"><div class="tpl">✦ 跟孩子怎么说 TELL THE KIDS</div>「唐朝长安分108坊，就像纽约grid。永兴坊以前住着魏征——专门给皇帝提意见，皇帝又烦他又离不开他。现在变成整个陕西的美食博物馆。」<br><br>"Tang Chang'an had 108 blocks. Wei Zheng lived here — an advisor the emperor found annoying but couldn't do without. Now it's a food museum of all Shaanxi."</div>
+<div class="fi2"><div class="fil">永兴坊必吃 MUST-TRY</div>摔碗酒 Bowl-smash ¥5 · 甑糕 Date cake ¥5-10 · 炸油糕 Fried cake ¥5-8 · 潼关肉夹馍 · 汉中热米皮 · 岐山擀面皮 · 子长煎饼 (1370!) · 千棰酥 · 水盆羊肉 · 安康蒸面 · 子洲馃馅 · 毛笔酥 · 牛奶鸡蛋醪糟 (kid-friendly!)</div>
+</div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">17:00</span><span class="ca">▶</span><div class="cn">城墙看日落 City Wall Sunset</div><div class="ce">南门→东门 South→East Gate · ~3km</div><div class="cb">骑车40min或步行1.5h Bike or walk. 看日落+7:30亮灯 Sunset + lights at 7:30</div><div class="tg"><span class="t tp">门票 ¥54</span><span class="t tp">自行车 Bike ¥45</span><span class="t tt">12岁以下需双人车 Under 12: tandem</span></div><div class="cd" data-nav="城墙南门"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=34.253350,108.940780&title=西安城墙永宁门&content=西安城墙永宁门&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到城墙南门 Navigate</a></div>
+<div class="dx"><p>路线：永宁门（南门）上→东走→长乐门（东门）下。6月日落约晚8点，7:30亮灯。<br>Route: South Gate up → walk east → East Gate down. Sunset ~8pm, lights ~7:30.</p><p><strong>城墙上能看到什么 What you'll see:</strong><br>· 俯瞰西安老城棋盘式布局 Chessboard layout — 爸爸会喜欢 Dad will love it<br>· 箭楼、角楼、护城河 Arrow towers, corner towers, moat<br>· 南门最热闹 South Gate liveliest · 6月傍晚=拍照黄金时段 Golden hour for photos</p><p>城墙很宽，孩子可以在上面跑。Wall is wide — kids can run freely.</p></div>
+<div class="tip"><div class="tpl">✦ 跟孩子怎么说 TELL THE KIDS</div>城墙是明朝修的。城门有三道防线：箭楼、城楼、瓮城——敌人进了第一道还会被困住！<br><br>"Ming Dynasty wall. Each gate has THREE layers — arrow tower, gate tower, trap courtyard. Enemies who broke through would be trapped!"</div>
+</div></div>
+
+<div class="c"><span class="cti f">晚餐 Dinner</span><div class="cn">永兴坊继续 或 东新街夜宵</div><div class="ce">Continue Yongxingfang or Dongxin night food street</div><div class="cb">东新街：清代至今本地夜宵街，营业到凌晨。Dongxin: Local night food since Qing Dynasty, open til dawn.</div></div>
+</div><div class="df">轻松到达日 Easy arrival · <span class="stars">孩子兴奋度 ★★★★☆</span></div></div>
+
+<!-- DAY 2 -->
+<div class="dp" id="dp-x2"><div class="di"><div class="dd">6/24 周三 Wednesday</div><div class="dtt">兵马俑日 · Terracotta Warriors</div></div><div class="cs">
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">07:30</span><span class="ca">▶</span><div class="cn">兵马俑 + 铜车马博物馆</div><div class="ce">Terracotta Warriors + Bronze Chariots · ~5h</div><div class="cb">一号坑→三号坑→二号坑→铜车马（别跳过!）Pit 1→3→2→Chariots (don't skip!)</div><div class="tg"><span class="t tp">门票 ¥120</span><span class="t tp">讲解器 ¥30</span><span class="t tp">包车 Charter ¥300-400</span></div><div class="cd" data-nav="兵马俑"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=34.384720,109.278160&title=秦始皇兵马俑博物院&content=秦始皇兵马俑博物院&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到兵马俑 Navigate</a></div>
+<div class="dx"><p>提前7-10天「秦始皇帝陵博物院」微信预约。8:00到避开9:30团潮。Book 7-10 days via WeChat. Arrive 8:00 to beat 9:30 tour rush.</p><p>推荐亲子讲解：文博记国宾讲师·郑老师。Kid-friendly guide: Teacher Zheng, Wenbo Ji VIP Guide.</p><p>携程约包车比打车靠谱。铜车马含在门票内，人少且精彩。Charter via Ctrip more reliable. Bronze Chariots included — amazing, don't skip!</p></div>
+<div class="tip"><div class="tpl">✦ 孩子任务卡 KID MISSIONS</div><strong>大孩子 Older kid:</strong> 找3种兵种差异（弓弩/步兵/战车），拍细节对比 Find 3 troop types, take close-ups<br><br><strong>小孩子 Younger kid:</strong> "表情观察员"——找5个不一样的脸，回酒店画"我最喜欢的俑" "Face detective" — find 5 faces, draw favorite at hotel</div>
+</div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti r">下午 PM</span><span class="ca">▶</span><div class="cn">回市区休息 Rest</div><div class="ce">建国门市场 或 东新街 Jianguomen Market or Dongxin St</div><div class="cd">
+<div class="dx"><p>建国门：翻新潮流市集+城墙景观 Renovated trendy market + wall views<br>东新街：本地夜宵街 Local late-night food street</p></div>
+<div class="fi2"><div class="fil">午餐 LUNCH</div>子午路张记肉夹馍 Ziwulu Zhangji ¥12/个（翠华路 Cuihua Rd）本地标杆 Local's #1. 配秦镇米皮 with Qinzhen noodle</div>
+</div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">19:00</span><span class="ca">▶</span><div class="cn">大唐不夜城</div><div class="ce">Tang Night City · Free 2100m · 周三人少 Wed less crowded!</div><div class="tg"><span class="t tp">免费 Free</span><span class="t ti">周三人少!</span></div><div class="cd" data-nav="大唐不夜城"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=34.218600,108.964000&title=大唐不夜城&content=大唐不夜城&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到大唐不夜城 Navigate</a></div>
+<div class="dx"><p><strong>孩子最爱 Kids love:</strong><br>· 喊泉 Shouting Fountain — 喊越大声水越高 louder=higher — 小朋友会疯狂 kids go crazy<br>· 不倒翁表演 Tumbler Lady 19:30/20:30/21:30<br>· 盛唐密盒问答 Tang Quiz — 大孩子可以试试回答 older kid can try answering<br>· 兵马俑VR ¥50-100 · 花车巡游 Float ~20:30<br>· 大雁塔喷泉 Pagoda fountain 20:00 Free</p><p>⚠ 不要在街上吃（贵且差）Don't eat here (bad). 提前吃好 Eat first.</p><p>可租唐代汉服 ¥150-300 Rent Tang costumes for boys</p></div>
+</div></div>
+</div><div class="df">上午充实·下午轻松·晚上精彩 Packed AM·Easy PM·Exciting night · <span class="stars">★★★★★</span></div></div>
+
+<!-- DAY 3 -->
+<div class="dp" id="dp-x3"><div class="di"><div class="dd">6/25 周四 Thursday</div><div class="dtt">动手体验日 · Hands-on Day</div></div><div class="cs">
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">06:30</span><span class="ca">▶</span><div class="cn">小南门早市 Morning Market</div><div class="ce">城墙根菜市场 Market along ancient wall</div><div class="cb">7点前到! 9点收摊! Before 7am best, closes 9!</div><div class="tg"><span class="t tp">免费 Free</span><span class="t tw">9点收摊! Closes 9!</span></div><div class="cd" data-nav="小南门早市"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=34.249500,108.936500&title=小南门早市&content=小南门早市&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到小南门早市 Navigate</a></div>
+<div class="dx"><p>沿城墙根，一侧600年城墙，一侧菜摊水果摊。8点后拥挤。Along wall base. 600yr wall + bustling stalls. Crowded after 8.</p></div>
+<div class="tip"><div class="tpl">✦ 跟孩子怎么说 TELL THE KIDS</div>"原来中国人每天早上是这样买菜的"——大爷大妈吆喝讨价还价——可能比博物馆都深刻。<br><br>"Seeing how Chinese people shop every morning — vendors yelling, bargaining — might be more eye-opening than any museum."</div>
+<div class="fi2"><div class="fil">早市必吃 MORNING EATS</div>油茶麻花 · 椒麻鸡 · 笼笼肉夹馍 · 胡辣汤 · 豌豆黄 · 蜂蜜凉糕 — 大都¥10 Most ~¥10</div>
+</div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">下午 PM</span><span class="ca">▶</span><div class="cn">碑林 + 书院门</div><div class="ce">Forest of Steles + Shuyuanmen · ~2.5h</div><div class="cb">拓碑+活字印刷+皮影+剪影 Rubbing+printing+puppets+portraits</div><div class="tg"><span class="t tp">碑林 ¥85</span><span class="t ti">联票 Combo ¥100</span><span class="t tp">拓片 ¥20-200+</span></div><div class="cd" data-nav="碑林"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=34.253700,108.945100&title=碑林博物馆&content=碑林博物馆&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到碑林 Navigate</a></div>
+<div class="dx"><p>碑林拓碑——像巨型"盖章"，孩子可以自己拓一幅带回家。Stone rubbing — like giant stamping. Kids make their own to take home.</p></div>
+<div class="tip"><div class="tpl">✦ 跟孩子怎么说 TELL THE KIDS</div>「印刷术发明前，古人把文字刻在石头上——就像古代hard drive！拓碑就是'打印'。」<br>"Before printing, texts carved into stone — like an ancient hard drive! Rubbing = printing a copy."</div>
+<div class="fi2"><div class="fil">书院门 SHUYUANMEN</div>画扇面 Fan ¥50 · 剪影 Silhouette ¥20 · 书签 Bookmark ¥10-20 · 汪氏皮影 Puppets (3F alley) · "一是了"活字印刷 Movable type (28000 blocks!)</div>
+</div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">晚上 Eve</span><span class="ca">▶</span><div class="cn">赳赳大秦 必看!</div><div class="ce">Terracotta Performance · Must-see!</div><div class="cb">以跪射俑为原型 Based on the Kneeling Archer</div><div class="cd"><div class="dx"><p>选A区，提前半小时到。Section A, arrive 30min early.</p></div></div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti f">晚餐 Dinner</span><span class="ca">▶</span><div class="cn">西安饭庄 陕菜大餐</div><div class="ce">Xi'an Fanzhuang (1929) · 钟楼 Bell Tower</div><div class="cb">葫芦鸡+毛笔酥+泡泡油糕 Gourd Chicken+Brush Pastry+Bubble Cake</div><div class="tg"><span class="t tp">人均 ¥80-120</span></div><div class="cd" data-nav="西安饭庄"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=34.260200,108.946600&title=西安饭庄钟楼店&content=西安饭庄钟楼店&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到西安饭庄 Navigate</a></div><div class="dx"><p>葫芦鸡¥88-128（先煮后蒸再炸 boiled→steamed→fried）· 毛笔酥 Brush Pastry（孩子觉得有趣 kids love）· 泡泡油糕 Bubble Cake（像气球 like balloon）</p></div></div></div>
+</div><div class="df">「动手体验日」拓碑·皮影·印章 Hands-on: rubbings·puppets·stamps · <span class="stars">★★★★☆</span></div></div>
+</div>
+
+<!-- XI'AN FOOD -->
+<div class="sp" id="sp-xian-fd"><div class="fw">
+<div class="fov"><strong>西安必吃 Essentials:</strong> 三秦套餐（肉夹馍+凉皮+冰峰 Roujiamo+Liangpi+Bingfeng）· 葫芦鸡 Gourd Chicken · biangbiang面 · 毛笔酥 · 泡泡油糕 · 甑糕<br><br><strong>泡馍体验:</strong> 每人拿白馍掰成碎粒，师傅再煮。Tear bread into tiny pieces, chef cooks. 孩子觉得有趣! Kids love the DIY!</div>
+<div class="prg"><div class="prg-bar"><div class="prg-fill" id="xf-fill"></div></div><div class="prg-txt" id="xf-cnt">0/0</div></div>
+
+<div class="fcat">主食 Staples</div>
+<div class="food" data-fk="xf1"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">肉夹馍 Roujiamo</div><div class="fen">Chinese burger · 西安灵魂食物 Soul food</div></div><div class="fa">▶</div></div><div class="food-det">
+<div class="shop" data-snav="子午路张记"><div class="sht"><span class="shn">子午路张记 Ziwulu Zhangji</span><span class="shp">¥12</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=34.237500,108.943300&title=子午路张记肉夹馍&content=子午路张记肉夹馍&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div><div class="shd">翠华路，陕博附近，24h. 本地标杆 Local's #1. 也有秦镇米皮</div></div>
+<div class="shop" data-snav="秦豫肉夹馍"><div class="sht"><span class="shn">秦豫 Qinyu</span><span class="shp">¥10-15</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=34.252400,108.946700&title=秦豫肉夹馍&content=秦豫肉夹馍&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div><div class="shd">柏树林南口. 黑珍珠 Black Pearl</div></div>
+<div class="shop" data-snav="东关吉祥"><div class="sht"><span class="shn">东关吉祥 Dongguan Jixiang</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=34.261200,108.962900&title=东关吉祥&content=东关吉祥&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div><div class="shd">东关南街. 馍外酥内软 Crispy outside soft inside</div></div>
+<div class="mn"><div class="mnl">我的打卡 My check-ins</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的... Where I ate..."><button class="nb" onclick="addN(this)">添加</button></div></div>
+</div></div>
+
+<div class="food" data-fk="xf2"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">泡馍 Paomo</div><div class="fen">Bread stew · 自己掰馍=亲子互动 Tear bread = family fun</div></div><div class="fa">▶</div></div><div class="food-det">
+<div class="shop" data-snav="老刘家泡馍"><div class="sht"><span class="shn">老刘家 Lao Liujia</span><span class="shp">¥30-45</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=34.265800,108.942300&title=老刘家泡馍&content=老刘家泡馍&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div><div class="shd">大莲花池街46号 (NOT Muslim Quarter)</div></div>
+<div class="fnote">每人掰馍成黄豆大碎粒，师傅煮。Tear bread tiny, chef cooks. 孩子觉得有趣!</div>
+<div class="mn"><div class="mnl">我的打卡 My check-ins</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div>
+</div></div>
+
+<div class="food" data-fk="xf3"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">Biangbiang面 Belt Noodle</div><div class="fen">宽如裤带 Wide as belt · 点三合一 Order "3-in-1"</div></div><div class="fa">▶</div></div><div class="food-det">
+<div class="shop" data-snav="郭老三面庄"><div class="sht"><span class="shn">郭老三 Guo Laosan</span><span class="shp">¥15-25</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=34.237800,108.943600&title=郭老三面庄&content=郭老三面庄&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div><div class="shd">翠华路. 三合一：牛肉+西红柿蛋+炸酱 3-in-1 mix</div></div>
+<div class="mn"><div class="mnl">我的打卡 My check-ins</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div>
+</div></div>
+
+<div class="food" data-fk="xf4"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">油泼面 Oil-splashed Noodle</div><div class="fen">辣椒面浇滚油，滋啦! Hot oil on chili, sizzle!</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">任何面馆都有 Any noodle shop. 不需专门找 No need to hunt.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="xf5"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">葫芦鸡 Gourd Chicken</div><div class="fen">先煮后蒸再炸 Boiled→steamed→fried</div></div><div class="fa">▶</div></div><div class="food-det">
+<div class="shop" data-snav="西安饭庄"><div class="sht"><span class="shn">西安饭庄 Fanzhuang (1929)</span><span class="shp">¥88-128</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=34.260200,108.946600&title=西安饭庄&content=西安饭庄&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div><div class="shd">钟楼 Bell Tower. +毛笔酥+泡泡油糕</div></div>
+<div class="shop" data-snav="醉长安"><div class="sht"><span class="shn">醉长安 Zui Chang'an</span><span class="shp">¥80-130</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=34.253900,108.944200&title=醉长安&content=醉长安&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div><div class="shd">书院门. 松鼠鱼孩子友好 Squirrel Fish kid-friendly</div></div>
+<div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div>
+</div></div>
+
+<div class="food" data-fk="xf6"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">凉皮 Liangpi</div><div class="fen">秦镇米皮更传统 Qinzhen style more traditional</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">子午路张记店里有 Available at Ziwulu Zhangji. 比麻酱凉皮更正宗 More authentic than sesame version.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="xf7"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">肉丸胡辣汤 Pepper Soup</div><div class="fen">不是河南版! NOT Henan! · 早餐灵魂 Breakfast soul</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">肉丸+圆白菜+土豆+辣子。早起去建国路小店 Meatball+cabbage+potato+chili. Morning, Jianguo Rd shops.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="fcat">其他特色 Other Specialties</div>
+<div class="food" data-fk="xf9"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">泡泡油糕 Bubble Cake</div><div class="fen">炸出来像气球 Puffs up like balloon!</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">好看又好吃 Looks amazing, tastes great. 西安饭庄有 Available at Xi'an Fanzhuang.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="xf12"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">冰峰汽水 Bing Feng Soda</div><div class="fen">西安的"可口可乐" Xi'an's Coca-Cola · 到处都有 Available everywhere</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">本地橙味汽水，陪伴几代西安人 Local orange soda, accompanied generations of Xi'an people. 相当于西安的可口可乐 Xi'an's Coca-Cola.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="fcat">永兴坊打卡 Yongxingfang Checklist (14种 items)</div>
+<div style="font-size:13px;color:#9A8E7A;margin:4px 0 8px;padding:0 2px">城墙中山门内 Inside Zhongshan Gate · 小份多买每样尝 Small portions, try everything! · ⚠ 部分摊位游客化 Some stalls touristy but overall worth it</div>
+
+<div class="food" data-fk="xf11"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">摔碗酒 Bowl-smashing Wine</div><div class="fen">喝完把碗摔碎! Drink then smash the bowl!</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">¥5/碗。喝完米酒把碗往地上摔碎！小朋友会疯狂想摔。有人说摔碗酒已过气，五块钱听个响，但对在美国长大的孩子来说这是绝对不会有的体验，值得一碗。可以给孩子换成非酒精饮品版本。<br>¥5/bowl. Drink rice wine then smash the bowl on the ground! Kids will go crazy wanting to smash. Some say it's passé — "5 yuan for a loud noise" — but for kids who grew up in the US, this is an experience they can't have back home. Worth it. Non-alcohol version available for kids.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="xf8"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">甑糕 Zhènggāo</div><div class="fen">Sticky date cake · 糯米+红枣 · 孩子都喜欢 Kids love it</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">糯米+红枣蒸的甜食，软糯不粘牙。¥5-10。永兴坊和街头都有。<br>Glutinous rice + red dates, steamed. Soft and chewy, doesn't stick to teeth. ¥5-10. Available at Yongxingfang and street stalls.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="xf10"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">毛笔酥 Brush Pastry</div><div class="fen">形似毛笔的酥点 Shaped like calligraphy brush · 拍照有趣 Fun photo</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">形似毛笔的酥点，拍照有趣。永兴坊、西安饭庄、醉长安都有。<br>Pastry shaped like a calligraphy brush — great photo op. Available at Yongxingfang, Xi'an Fanzhuang, and Zui Chang'an.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+<div class="food" data-fk="xf13"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">潼关肉夹馍 Tongguan Burger</div><div class="fen">省级非遗 Provincial heritage · 和张记不同流派 Different school</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">外脆里嫩，层次分明 Flaky layers, crispy. 值得和子午路张记比较 Worth comparing both styles.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="xf14"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">岐山擀面皮 Rolled Noodle</div><div class="fen">筋道有韧劲 Springy & chewy</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">面筋吸满酱汁 Gluten soaks up sauce. 永兴坊有 At Yongxingfang.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="xf15"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">汉中热米皮 Hot Rice Noodle</div><div class="fen">和关中凉皮完全不同 Totally different from cold noodle</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">软糯辣子香 Soft & spicy. 永兴坊有 At Yongxingfang.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="xf16"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">蒲城炸油糕 Fried Sugar Cake</div><div class="fen">外焦里嫩，红糖心 Golden, brown sugar center ¥5-8</div></div><div class="fa">▶</div></div><div class="food-det"><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="xf17"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">子长煎饼 Zichang Pancake</div><div class="fen">省级非遗 始于1370 Heritage since 1370!</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">荞面原料，蘸油泼辣子醋汁 Buckwheat, dipped in chili vinegar.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="xf18"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">柞水洋芋糍粑 Potato Cake</div><div class="fen">酸辣/浆水/玫瑰蜂蜜三种口味 3 flavors · 搭配玉米醪糟 with corn rice wine</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">有酸辣、浆水、玫瑰蜂蜜三种口味可选，搭配玉米醪糟。Three flavors: sour-spicy, fermented, rose-honey. Paired with corn fermented rice.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="xf19"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">澄城水盆羊肉 Lamb Soup</div><div class="fen">配月牙饼夹小菜 With crescent bread & pickled sides</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">澄城水盆羊肉配月牙饼夹小菜，汤鲜肉嫩。Chengcheng lamb soup with crescent-shaped bread and pickled vegetable sides. Rich broth, tender meat.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="xf20"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">安康蒸面 Steamed Noodle</div><div class="fen">可以喝汤的凉皮 Cold noodle you can drink the broth of</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">口感爽滑，汤汁鲜美。Smooth and slippery, savory broth. 和其他凉皮完全不同的体验 Totally different from other cold noodles.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="xf21"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">宁强千棰酥 Hammered Crisp</div><div class="fen">花生芝麻核桃瓜子仁 Peanut sesame walnut · 可看制作过程 Watch it made!</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">以花生米、芝麻、核桃、瓜子仁为原料，用大木槌反复击打而成，口感酥脆。Made by repeatedly hammering peanuts, sesame, walnuts, and seeds with a giant wooden mallet. Crispy! Fun to watch the process.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="xf22"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">子洲馃馅 Date Pastry</div><div class="fen">纯枣泥馅，香甜 Pure date paste filling · 陕北特色 Northern Shaanxi</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">纯枣泥馅，香甜。陕北特色。Pure date paste filling, sweet and fragrant. Northern Shaanxi specialty.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="xf23"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">牛奶鸡蛋醪糟 Sweet Rice Soup</div><div class="fen">甜的，孩子友好! Sweet, kid-friendly!</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">甜的醪糟汤底加牛奶和鸡蛋花，温暖好喝。孩子一般都喜欢。Sweet fermented rice soup with milk and egg drops. Warm and comforting. Kids usually love it.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div id="custom-foods"></div>
+<div class="af" id="add-food">
+<div class="afb" onclick="this.closest('.af').classList.add('open')"><div class="afp">+</div><span>添加新美食 Add new food</span></div>
+<div class="aff">
+<div class="afr"><label>美食名称 Food name</label><input class="afi" id="nfn" placeholder="比如：羊肉串 Lamb skewers"></div>
+<div class="afr"><label>说明 Description (选填 optional)</label><input class="afi" id="nfd" placeholder="比如：路边摊发现的 Street stall find"></div>
+<div class="afa"><button class="afc" onclick="cancelAF()">取消 Cancel</button><button class="afs" onclick="submitAF()">添加 Add</button></div>
+</div>
+</div>
+
+<div class="far">美食街区打卡 Food Streets</div>
+<div class="food" data-fk="xfs1"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">东新街夜宵 Dongxin Night Food</div><div class="fen">清代至今 Since Qing Dynasty · 凌晨营业 Open til dawn</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">胡辣汤/烤肉/炒菜 Soup/BBQ/stir-fry. 氛围很本地 Very local vibe.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+<div class="food" data-fk="xfs2"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">建国门综合市场 Jianguomen</div><div class="fen">翻新潮流市集 Trendy market + wall views</div></div><div class="fa">▶</div></div><div class="food-det"><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+<div class="food" data-fk="xfs3"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">顺城巷 Shuncheng Lane</div><div class="fen">城墙内侧 Along wall · 爸爸探索感 Dad loves exploring</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">食店/酒吧/咖啡/秦腔 Food/bar/cafe/opera. 一侧城墙一侧古建 Wall on one side, old buildings on other.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+</div></div>
+</div>
+
+<!-- LUOYANG -->
+<div class="cp" id="p-luoyang">
+<div class="st"><button class="stb a" data-sub="ly-it">行程 Itinerary</button><button class="stb" data-sub="ly-fd">美食打卡 Food</button></div>
+
+<div class="sp a" id="sp-ly-it">
+<div class="wx" id="wx-luoyang"><div class="wx-icon">⏳</div><div class="wx-info"><div class="wx-temp">洛阳天气加载中... Loading Luoyang weather...</div><div class="wx-tip"></div></div></div>
+<div class="dtb"><button class="dt a" data-day="l1">DAY 4</button><button class="dt" data-day="l2">DAY 5</button><button class="dt" data-day="l3">DAY 6</button></div>
+
+<div class="dp a" id="dp-l1"><div class="di"><div class="dd">6/26 周五 Friday</div><div class="dtt">西安→洛阳 · Xi'an to Luoyang</div></div><div class="cs">
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">上午 AM</span><span class="ca">▶</span><div class="cn">高铁去洛阳 HSR to Luoyang</div><div class="ce">西安北→洛阳龙门 Xi'an North→Luoyang Longmen · ~1.5h</div><div class="cb">班次很密，基本每半小时一班。Frequent trains, roughly every 30min.</div><div class="tg"><span class="t tp">¥175-230</span></div><div class="cd"><div class="dx"><p>建议买中午前后的车，下午到洛阳。入住酒店（建议住老城区），放下行李小睡。孩子在西安连续玩了三天半，需要recharge。<br>Take a midday train, arrive afternoon. Hotel in Old City area. Drop bags, nap. Kids need to recharge after 3.5 days in Xi'an.</p></div></div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">16:30</span><span class="ca">▶</span><div class="cn">白马寺 White Horse Temple</div><div class="ce">中国第一座佛教寺院 China's first Buddhist temple · 东汉68AD</div><div class="cb">真正值得去的是后院的「国际佛殿区」The real highlight is the International Temple Zone</div><div class="tg"><span class="t tp">门票 ¥35</span><span class="t ti">12岁以下免费 Free under 12</span><span class="t ti">打车30min from hotel</span></div><div class="cd" data-nav="白马寺"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=34.724300,112.568600&title=白马寺&content=白马寺&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到白马寺 Navigate</a></div>
+<div class="dx"><p>中国寺院部分快速走过，重点花在国际佛殿区：<br>Skip through the Chinese temple quickly, focus on the International Zone:<br>· 泰国殿 Thai Hall — 金碧辉煌尖顶佛塔，像走进曼谷 Golden spired pagoda, feels like Bangkok<br>· 缅甸殿 Myanmar Hall — 白色大金塔，和泰国风格完全不同 White golden pagoda, totally different style<br>· 印度殿 Indian Hall — 红砂岩桑奇风格，又是一种画风 Red sandstone Sanchi style, yet another look</p><p>三种完全不同的亚洲建筑风格紧挨在一起，视觉冲击很强。不需要讲解孩子也觉得「哇」。<br>Three completely different Asian architectural styles side by side — visually stunning. No explanation needed, kids will just go "wow."</p><p>不大，1小时足够。4:30出门5点到逛1小时到6点。<br>Not large, 1 hour is enough. Leave at 4:30, arrive 5, browse til 6.</p></div>
+<div class="tip"><div class="tpl">✦ 跟孩子怎么说 TELL THE KIDS</div>「We're not leaving Luoyang, but we're about to visit Thailand, Myanmar, and India — all in the same backyard.」<br>「我们没有离开洛阳，但马上要去泰国、缅甸和印度——都在同一个后院里。」</div>
+</div></div>
+
+<div class="c"><span class="cti f">晚餐 Dinner</span><div class="cn">找本地馆子 Local restaurant</div><div class="ce">休息为主的一天 A rest-focused day</div></div>
+</div><div class="df">轻松过渡日 Easy transition day · <span class="stars">孩子兴奋度 ★★★☆☆</span></div></div>
+
+<div class="dp" id="dp-l2"><div class="di"><div class="dd">6/27 周六 Saturday</div><div class="dtt">古墓+西工小街 · Tombs & Local Food</div></div><div class="cs">
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">09:00</span><span class="ca">▶</span><div class="cn">古墓博物馆 Ancient Tomb Museum</div><div class="ce">全国唯一的古墓专题博物馆! China's only tomb-themed museum!</div><div class="cb">真的走进2000年前的地下墓室! Walk inside real 2000-year-old underground tombs!</div><div class="tg"><span class="t tp">免费 Free 需预约 Reservation required</span><span class="t ti">打车20min 北郊邙山</span></div><div class="cd" data-nav="古墓博物馆"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=34.738200,112.397100&title=洛阳古墓博物馆&content=洛阳古墓博物馆&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到古墓博物馆 Navigate</a></div>
+<div class="dx"><p>地下搬迁复原了20多座从西汉到宋代的真实墓室。全程地下，6月底地面超过35度，里面天然阴凉。<br>20+ real tombs relocated underground, from Western Han to Song Dynasty. All underground — naturally cool when it's 35°C+ above ground in late June.</p><p>孩子会看到：不同朝代墓室结构完全不同（砖砌/彩绘壁画）、石棺、陪葬品（陶器/铜镜）、壁画描绘墓主人生前生活（请客吃饭/打猎）。<br>Kids will see: completely different tomb styles across dynasties (brick/painted murals), stone coffins, burial goods (pottery/bronze mirrors), murals showing the tomb owner's life (feasts/hunting).</p><p>强烈推荐找讲解员，否则就是排队钻洞看石头。推荐穿黄马褂的小龙女老师。<br>Highly recommend getting a guide, otherwise it's just queuing and crawling through tunnels. Recommended: Teacher Xiaolongnü (yellow vest guide).</p><p>官网或微信预约。护照可用。周一闭馆，6/27周六正常。约1-1.5小时。<br>Book via official site or WeChat. Passport OK. Closed Mondays, 6/27 Saturday is fine. About 1-1.5 hours.</p></div>
+<div class="tip"><div class="tpl">✦ 跟孩子怎么说 TELL THE KIDS</div>「We're going to explore real ancient tombs over 2000 years old. They were underground and nobody was supposed to find them — but archaeologists dug them up and moved them here so we can walk inside.」<br><br>和兵马俑的对比：「兵马俑是皇帝专门建来给别人看的'地下军队展示区'，而这些古墓是真正埋人的地方——一个是给人看的，一个是不想被人看到的。」<br>"Terracotta Warriors was a 'display' the emperor built for others to see. These tombs are where people were actually buried — one was meant to be seen, the other was never meant to be found."</div>
+</div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti f">午餐 Lunch</span><span class="ca">▶</span><div class="cn">西工小街 Xigong Street</div><div class="ce">洛阳本地人的美食圣地 Local's food paradise · 不是游客街 NOT a tourist street</div><div class="cb">打车回市区约20min。人均¥20-30吃到撑! ~¥20-30pp until stuffed!</div><div class="cd" data-nav="西工小街"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=34.670600,112.451700&title=西工小街&content=西工小街&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到西工小街 Navigate</a></div>
+<div class="dx"><p>· 小街锅贴 Xiao Jie Guotie — 河南省非遗，外皮金黄酥脆，一口咬下去汤汁喷出来。推荐牛肉馅，先来两三两试试（一两5个）。Provincial heritage potstickers — golden crispy skin, juice squirts when you bite. Try beef filling, start with 2-3 liang (5 per liang).<br>· 小街天府担担面 Tianfu Dandan Noodle — 配一瓶海碧汽水 with Haibi soda（洛阳本地橙味汽水=洛阳的冰峰 Luoyang's local orange soda = Luoyang's Bingfeng）<br>· 丹珍汤圆 Danzhen Tangyuan — 桂花甜酒里泡的小汤圆，饭后甜品 Sweet rice balls in osmanthus wine, dessert<br>· 可选：涣牛肚 Braised tripe（串串形式，刷辣椒油 skewer-style with chili oil）、浆面条 Fermented noodle（洛阳独有，酸酸的 Luoyang-only, tangy taste — 孩子不一定喜欢 kids may not like）</p></div>
+</div></div>
+
+<div class="c"><span class="cti r">下午 PM</span><div class="cn">休息 Rest</div><div class="ce">酒店休息或随意逛逛 Hotel rest or casual stroll</div></div>
+
+<div class="c"><span class="cti f">晚餐 Dinner</span><div class="cn">随机安排 Flexible</div><div class="ce">可以试试十字街夜市（氛围好但游客化）Shizihe Night Market (good vibe but touristy)</div></div>
+</div><div class="df">上午古墓探秘·中午本地美食·下午充电 Tomb morning·Local food lunch·Recharge PM · <span class="stars">孩子兴奋度 ★★★★☆</span></div></div>
+
+<div class="dp" id="dp-l3"><div class="di"><div class="dd">6/28 周日 Sunday</div><div class="dtt">洛阳博物馆→开封 · Museum then Kaifeng</div></div><div class="cs">
+<div class="tip" style="margin-bottom:10px"><div class="tpl">⚠ 行李避雷 LUGGAGE WARNING</div>洛阳博物馆虽然有行李寄存，但很多避雷帖反映体验差，疑似为了给门口个体户存行李生意引流。建议退房后把行李寄存在酒店前台（大部分酒店免费），轻装去博物馆，看完回酒店取行李再打车去高铁站。<br><br>Luoyang Museum technically has luggage storage, but many reviews warn it's poorly run — possibly to drive business to private storage vendors outside. Better to leave bags at hotel front desk (most hotels store for free), visit museum bag-free, then return to grab bags and taxi to station.</div>
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">09:00</span><span class="ca">▶</span><div class="cn">洛阳博物馆 Luoyang Museum</div><div class="ce">定向打卡，30-45分钟搞定 Targeted visit, 30-45min · 不要通看 Don't see everything</div><div class="tg"><span class="t tp">免费 Free</span><span class="t ti">「智慧洛博」小程序预约 Book via WeChat mini-program</span></div><div class="cd" data-nav="洛阳博物馆"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=34.618800,112.448500&title=洛阳博物馆&content=洛阳博物馆&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到洛阳博物馆 Navigate</a></div>
+<div class="dx"><p><strong>直奔一层·河洛文明展·汉魏展厅 Go straight to 1F Han-Wei Hall (15-20min):</strong><br>· 曹魏白玉杯 Cao Wei White Jade Cup — 镇馆之宝，和田白玉，曹魏时期 Star piece, Hetian jade, Cao Wei era. "This cup was made during Cao Pi's Wei Kingdom, right here in Luoyang — the same era as Dynasty Warriors!"<br>· 东汉石辟邪 Eastern Han Stone Beast — 八吨重！国内现存最大最重的东汉石刻 8 tons! Largest Eastern Han stone carving in China<br>· 东汉兵器 Han Weapons（弩机/铁剑 crossbow mechanism/iron swords）<br>· 彩绘陶百花灯 Painted Hundred-Flower Lamp — 1.4米高，上面有32个神话生物。让小朋友数数有多少只动物 1.4m tall, 32 mythical creatures. Let kids count the animals.</p><p><strong>快速扫二层·唐三彩馆 Quick scan 2F Tang Tri-color Hall (5-10min, optional):</strong><br>颜色鲜艳（黄绿褐三色），孩子视觉上不会无聊。三彩骆驼和胡人俑——「1300年前丝绸之路上的卡车司机和外国商人」。<br>Vivid colors (yellow-green-brown). Tri-color camels and foreign merchant figurines — "truck drivers and foreign traders on the Silk Road 1300 years ago."</p><p>洛博离高铁站只有10min车程，看完打车去站很方便。<br>Museum is only 10min from Luoyang Longmen HSR — easy taxi to station after visiting.</p></div>
+</div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">中午 Noon</span><span class="ca">▶</span><div class="cn">高铁去开封 HSR to Kaifeng</div><div class="ce">洛阳龙门→开封北（或经郑州）~40min-1h</div><div class="tg"><span class="t tp">¥100-150</span></div><div class="cd"><div class="dx"><p>很快！预计中午到达开封。入住酒店，留着肚子——晚上有鼓楼夜市！<br>Very fast! Arrive Kaifeng around noon. Check in, save your appetite — Drum Tower Night Market tonight!</p></div></div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti f">晚上 Evening</span><span class="ca">▶</span><div class="cn">鼓楼夜市! Drum Tower Night Market!</div><div class="ce">开封最热闹的夜市 Kaifeng's most bustling night market</div><div class="cd" data-nav="鼓楼夜市开封"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=34.799300,114.354500&title=开封鼓楼夜市&content=开封鼓楼夜市&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到鼓楼夜市开封 Navigate</a></div>
+<div class="dx"><p>· 灌汤包 Soup dumplings — 开封最有名！先咬小口吸汤，再吃馅。教孩子正确吃法 Kaifeng's most famous! Bite a small hole, sip the soup, then eat the filling. Teach kids the technique<br>· 炒凉粉 Fried jelly noodle — 铁板炒的，焦焦的外皮+酸辣 Iron plate fried, crispy crust + sour-spicy<br>· 桶子鸡 Barrel chicken — 马豫兴（1855年非遗），整只卤鸡，可买半只尝尝 Ma Yuxing (1855 heritage), whole braised chicken, buy half to try<br>· 花生糕 Peanut cake — 甜的松松软软 Sweet and fluffy<br>· 黄焖鱼 Braised fish — 开封特色整条小鱼 Kaifeng-style whole small fish</p></div>
+</div></div>
+</div><div class="df">上午博物馆·中午转场·晚上开封夜市高光 Museum AM·Travel noon·Night market highlight · <span class="stars">孩子兴奋度 ★★★★★</span></div></div>
+</div>
+
+<div class="sp" id="sp-ly-fd"><div class="fw">
+<div class="fov"><strong>洛阳必吃 Luoyang Essentials:</strong> 牛肉汤早餐 Beef soup breakfast（自己加盐加辣 add salt & chili yourself）· 水席 Water banquet · 小街锅贴 Potstickers · 海碧汽水 Haibi soda（洛阳的冰峰 Luoyang's Bingfeng）</div>
+<div class="prg"><div class="prg-bar"><div class="prg-fill" id="ly-fill"></div></div><div class="prg-txt" id="ly-cnt">0/0</div></div>
+
+<div class="fcat">主食 Staples</div>
+<div class="food" data-fk="lf1"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">牛肉汤 Beef Soup Breakfast</div><div class="fen">洛阳早餐灵魂 Luoyang breakfast soul · 自己加盐加辣 Add salt & chili yourself</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">洛阳人的早餐标配。汤底清但鲜，自己加盐加辣调味。配饼丝或烧饼。Luoyang's breakfast staple. Clear but rich broth — season it yourself with salt and chili. Served with bread strips or flatbread.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="lf2"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">水席 Water Banquet</div><div class="fen">洛阳独有 Luoyang-only · 必点连汤肉片+牡丹燕菜</div></div><div class="fa">▶</div></div><div class="food-det"><div class="shop" data-snav="管记水席"><div class="sht"><span class="shn">管记水席老店 Guanji</span><span class="shp">人均¥30-40</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=34.668900,112.457800&title=管记水席&content=管记水席&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div><div class="shd">仙果市街 Xianguo Market St. 必点连汤肉片 Soup sliced meat + 牡丹燕菜 Peony swallow dish. ⚠ 避坑：不去"真不同" Avoid "Zhen Bu Tong"</div></div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="lf3"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">小街锅贴 Potstickers</div><div class="fen">河南省非遗 Provincial heritage · 一口汤汁喷出 Juice squirts when you bite</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">西工小街。外皮金黄酥脆，推荐牛肉馅。本地人按斤买，先来两三两（一两5个）。Xigong Street. Golden crispy skin, try beef filling. Locals buy by the jin — start with 2-3 liang (5 per liang).</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="lf4"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">浆面条 Fermented Noodle</div><div class="fen">洛阳独有 Luoyang-only · 酸酸的口感 Tangy taste</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">发酵面汤煮的面，酸酸的，很奇特。可以点一碗尝尝，孩子不一定喜欢。Fermented flour broth noodle, tangy and unique. Try a bowl — kids may or may not like it.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="lf5"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">丹珍汤圆 Sweet Rice Balls</div><div class="fen">桂花甜酒小汤圆 Osmanthus wine rice balls · 饭后甜品 Dessert</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">西工小街。桂花甜酒里泡的小汤圆，解腻。Xigong Street. Tiny rice balls in osmanthus sweet wine. Refreshing after heavy food.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="lf6"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">海碧汽水 Haibi Soda</div><div class="fen">洛阳本地橙味汽水 Luoyang's local orange soda = 洛阳的冰峰</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">和西安的冰峰一样，每个城市都有自己的本地汽水。配担担面绝配。Like Xi'an's Bingfeng — every city has its own local soda. Perfect with dandan noodles.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div id="custom-foods-ly"></div>
+<div class="af" id="add-food-ly"><div class="afb" onclick="this.closest('.af').classList.add('open')"><div class="afp">+</div><span>添加新美食 Add new food</span></div><div class="aff"><div class="afr"><label>美食名称 Food name</label><input class="afi" id="nfn-ly" placeholder="新发现的洛阳美食..."></div><div class="afr"><label>说明 Description (选填)</label><input class="afi" id="nfd-ly" placeholder="在哪发现的..."></div><div class="afa"><button class="afc" onclick="this.closest('.af').classList.remove('open')">取消</button><button class="afs" onclick="submitAFCity('ly')">添加</button></div></div></div>
+</div></div>
+</div>
+
+<!-- KAIFENG -->
+<div class="cp" id="p-kaifeng">
+<div class="st"><button class="stb a" data-sub="kf-it">行程 Itinerary</button><button class="stb" data-sub="kf-fd">美食打卡 Food</button></div>
+
+<div class="sp a" id="sp-kf-it">
+<div class="wx" id="wx-kaifeng"><div class="wx-icon">⏳</div><div class="wx-info"><div class="wx-temp">开封天气加载中... Loading Kaifeng weather...</div><div class="wx-tip"></div></div></div>
+<div class="dtb"><button class="dt a" data-day="k1">DAY 7</button></div>
+
+<div class="dp a" id="dp-k1"><div class="di"><div class="dd">6/29 周一 Monday</div><div class="dtt">清明上河园! · Into the Painting!</div></div><div class="cs">
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">09:00</span><span class="ca">▶</span><div class="cn">清明上河园 Riverside Scene Park</div><div class="ce">走进《清明上河图》! Walk into the famous painting!</div><div class="cb">整天都在园里！孩子最「放飞」的一天 All day here! Kids' most "let loose" day</div><div class="tg"><span class="t tp">门票 ¥120 / 半价 ¥60 (6-18岁)</span><span class="t ti">每天~100场免费表演 ~100 free shows daily</span></div><div class="cd" data-nav="清明上河园"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=34.812600,114.378500&title=清明上河园&content=清明上河园&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到清明上河园 Navigate</a></div>
+<div class="dx"><p><strong>孩子最爱 Kids' favorites:</strong><br>· 《岳飞枪挑小梁王》Yue Fei jousting — 真马实战，第一优先级! Real horses, real combat — TOP priority!<br>· 射箭/投壶/蹴鞠 Archery/pot-toss/ancient football ¥10-30/次 per game<br>· 宋代皇家乐园 Song Royal Playground — 5个游乐设施，门票已含 5 rides included in ticket<br>· 活字印刷/扎染手工 Movable type printing/tie-dye crafts<br>· 免费宋装拍照 Free Song Dynasty costume photos</p>
+<p><strong>打铁花 Iron Flower Show:</strong> 喷1600°C铁水制造「铁花」，夜间极其震撼，每天多达6场。<br>Spray 1600°C molten iron to create "iron flowers" — extremely spectacular at night, up to 6 shows daily.</p>
+<p><strong>晚间演出 Evening show:</strong>《大宋·东京梦华》— 700演员+水上舞台+3000灯光，70分钟。约20:10开场。<br>"Dream of Tokyo" — 700 performers + water stage + 3000 lights, 70min. Starts ~8:10pm.<br><span style="color:#C4923A;font-weight:700">需单独购票 Separate ticket ¥150-299</span></p></div>
+<div class="tip"><div class="tpl">✦ 跟孩子怎么说 TELL THE KIDS</div>「我们到了北宋的首都——1000年前这里是全世界最大、最繁华的城市，比当时的伦敦大10倍。有一幅画叫《清明上河图》，画的就是这里。今天我们要走进那幅画里面，看真马打仗、射箭、踢古代足球！」<br><br>"We've arrived at the Northern Song capital — 1000 years ago this was the world's largest, most prosperous city, 10x bigger than London. There's a famous painting showing this place. Today we're walking INTO that painting — real horse battles, archery, ancient football!"</div>
+</div></div>
+
+<div class="c"><span class="cti f">午餐+晚餐 Meals</span><div class="cn">园内小吃 + 夜市再刷灌汤包</div><div class="ce">Park snacks for lunch + Night market for dumplings again</div></div>
+</div><div class="df">整天清明上河园！孩子放飞日 All-day park! Kids' freedom day · <span class="stars">孩子兴奋度 ★★★★★</span></div></div>
+</div>
+
+<div class="sp" id="sp-kf-fd"><div class="fw">
+<div class="fov"><strong>开封必吃 Kaifeng Essentials:</strong> 灌汤包 Soup dumplings（先咬小口吸汤 bite hole, sip soup first）· 桶子鸡 Barrel chicken · 炒凉粉 Fried jelly · 花生糕 Peanut cake · 打铁花不是吃的但必看 Iron Flower isn't food but must-see!</div>
+<div class="prg"><div class="prg-bar"><div class="prg-fill" id="kf-fill"></div></div><div class="prg-txt" id="kf-cnt">0/0</div></div>
+
+<div class="fcat">开封特色 Kaifeng Specialties</div>
+<div class="food" data-fk="kf1"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">灌汤包 Soup Dumplings</div><div class="fen">开封最有名! Kaifeng's most famous · 先吸汤再吃馅 Sip soup first</div></div><div class="fa">▶</div></div><div class="food-det"><div class="shop" data-snav="黄家包子"><div class="sht"><span class="shn">黄家包子 或 禾源 Huangjia or Heyuan</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=34.798500,114.352100&title=黄家包子&content=黄家包子&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div><div class="shd">不去"开封第一楼" NOT "Kaifeng First Floor". 先咬小口吸汤，再吃馅 Bite a small hole, sip soup, then eat filling.</div></div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="kf2"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">桶子鸡 Barrel Chicken</div><div class="fen">马豫兴 Ma Yuxing · 1855年非遗 Heritage since 1855</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">整只卤鸡，咸鲜味，可以买半只尝尝。Whole braised chicken, savory. Buy half to try. Ma Yuxing — 1855 heritage brand.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="kf3"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">炒凉粉 Fried Jelly Noodle</div><div class="fen">铁板炒，焦焦外皮+酸辣 Iron plate fried, crispy + sour-spicy</div></div><div class="fa">▶</div></div><div class="food-det"><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="kf4"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">花生糕 Peanut Cake</div><div class="fen">甜的松松软软 Sweet and fluffy</div></div><div class="fa">▶</div></div><div class="food-det"><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="kf5"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">黄焖鱼 Braised Fish</div><div class="fen">开封特色 Kaifeng specialty · 整条小鱼焖的 Whole small braised fish</div></div><div class="fa">▶</div></div><div class="food-det"><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div id="custom-foods-kf"></div>
+<div class="af" id="add-food-kf"><div class="afb" onclick="this.closest('.af').classList.add('open')"><div class="afp">+</div><span>添加新美食 Add new food</span></div><div class="aff"><div class="afr"><label>美食名称</label><input class="afi" id="nfn-kf" placeholder="新发现的开封美食..."></div><div class="afr"><label>说明 (选填)</label><input class="afi" id="nfd-kf"></div><div class="afa"><button class="afc" onclick="this.closest('.af').classList.remove('open')">取消</button><button class="afs" onclick="submitAFCity('kf')">添加</button></div></div></div>
+</div></div>
+</div>
+
+<!-- DATONG -->
+<div class="cp" id="p-datong">
+<div class="st"><button class="stb a" data-sub="dt-it">行程 Itinerary</button><button class="stb" data-sub="dt-fd">美食打卡 Food</button></div>
+
+<div class="sp a" id="sp-dt-it">
+<div class="wx" id="wx-datong"><div class="wx-icon">⏳</div><div class="wx-info"><div class="wx-temp">大同天气加载中... Loading Datong weather...</div><div class="wx-tip"></div></div></div>
+<div class="dtb"><button class="dt a" data-day="d1">DAY 8</button><button class="dt" data-day="d2">DAY 9</button><button class="dt" data-day="d3">DAY 10</button></div>
+
+<div class="dp a" id="dp-d1"><div class="di"><div class="dd">6/30 周二 Tuesday</div><div class="dtt">开封→大同 · Long train day</div></div><div class="cs">
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">上午 AM</span><span class="ca">▶</span><div class="cn">高铁去大同 HSR to Datong</div><div class="ce">开封→郑州东→太原南→大同南 · 5-6h ⚠</div><div class="cb">全程最长高铁段！需换乘两次。Longest train leg! 2 transfers required.</div><div class="tg"><span class="t tp">¥400-500</span><span class="t tw">5-6小时!</span></div><div class="cd"><div class="dx"><p>带好iPad、书、零食、充电宝。高铁上可买盒饭，或郑州东站换乘时买吃的。<br>Pack iPad, books, snacks, charger. Buy boxed meals on train, or grab food at Zhengzhou East during transfer.</p><p>这是整趟古都走廊唯一一段长高铁。耐心坐完，后面就轻松了！<br>This is the ONLY long train leg of the whole trip. After this, everything is easy!</p></div></div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti f">晚上 Evening</span><span class="ca">▶</span><div class="cn">铜火锅 Copper Hot Pot</div><div class="ce">大同最标志性的一餐! Datong's signature meal!</div><div class="cb">炭火铜锅涮羊肉 Charcoal copper pot lamb · 简单直接 Simple and direct</div><div class="cd">
+<div class="dx"><p>大同靠近内蒙古，羊肉品质极好。炭火铜锅涮羊肉，和北京铜锅类似但更原始。羊肉蘸麻酱，孩子涮肉涮菜没难度。<br>Datong is near Inner Mongolia — lamb quality is superb. Charcoal copper pot, similar to Beijing style but more rustic. Lamb dipped in sesame paste. Easy for kids.</p><p>推荐：明月轩、凯鸽火锅。配沙棘汁（大同本地酸甜饮料，解腻神器）。<br>Recommended: Mingyuexuan, Kaige. Pair with sea buckthorn juice (local sweet-sour drink, perfect for cutting grease).</p></div>
+</div></div>
+
+<div class="c"><span class="cti r">抵达后 After arrival</span><div class="cn">古城鼓楼散步 Drum Tower stroll</div><div class="ce">入住后随意走走 Casual evening stroll</div></div>
+</div><div class="df">赶路日 Travel day · 晚上铜火锅犒劳 Copper hot pot reward · <span class="stars">孩子兴奋度 ★★★☆☆</span></div></div>
+
+<div class="dp" id="dp-d2"><div class="di"><div class="dd">7/1 周三 Wednesday</div><div class="dtt">云冈石窟 · Yungang Grottoes</div></div><div class="cs">
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">08:30</span><span class="ca">▶</span><div class="cn">云冈石窟 Yungang Grottoes</div><div class="ce">整趟古都走廊唯一的石窟体验! The ONLY grotto experience of the whole trip!</div><div class="cb">51000尊佛像，最大的5层楼高! 51,000 Buddhas, tallest is 5 stories!</div><div class="tg"><span class="t tp">¥120 / 半价¥60</span><span class="t ti">提前1-7天「云冈研究院」小程序预约</span><span class="t tp">讲解器 ¥30 有儿童版</span><span class="t tp">电瓶车 ¥15往返</span><span class="t ti">打车/包车40min from city</span></div><div class="cd" data-nav="云冈石窟"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=40.111400,113.132800&title=云冈石窟&content=云冈石窟&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到云冈石窟 Navigate</a></div>
+<div class="dx"><p><strong>重点看 Key caves:</strong><br>· 第5窟 Cave 5 — 云冈最大佛像17米（五层楼高），仰望时压迫感强烈 Largest at 17m (5 stories). Overwhelming when you look up<br>· 第6窟 Cave 6 — 整个云冈最精美。33幅浮雕像连环画讲佛陀一生 Most exquisite. 33 relief panels telling Buddha's whole life story like a comic book<br>· 第9/10窟（五华洞）Caves 9/10 — 前室华丽，颜色保存好 Gorgeous front chambers, colors well preserved<br>· 第20窟 Cave 20 — 标志性露天大佛13.75米，因前壁崩塌变成露天，反而最具辨识度 Iconic open-air Buddha 13.75m. Front wall collapsed, making it the most recognizable</p><p>早上10点后是团队高峰，建议8:30开园即入。参观约2.5-3小时。<br>Tour groups peak after 10am. Enter at 8:30 opening. About 2.5-3 hours.</p><p>文创店买石窟造型冰淇淋（佛像或莲花形状）——哄娃神器。<br>Gift shop has grotto-shaped ice cream (Buddha or lotus) — great for bribing kids.</p></div>
+<div class="tip"><div class="tpl">✦ 跟孩子怎么说 TELL THE KIDS</div>「这些佛像是1500年前鲜卑族刻的——他们是从草原来的游牧民族，不是汉族。所以你看佛像的鼻子很高、眼窝很深、卷发——长得像外国人！」<br><br>"These statues were carved 1500 years ago by the Xianbei — nomads from the grasslands, not Han Chinese. Look at the high noses, deep eye sockets, curly hair — they look like foreigners!"</div>
+</div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti r">下午 PM</span><span class="ca">▶</span><div class="cn">休息 + 刀削面午饭</div><div class="ce">回市区40min · 古城内随缘找馆子</div><div class="cd"><div class="dx"><p>刀削面推荐：东方削面（透明厨房可看削面过程）或七中刀削面（35年老店，一碗不到10元）。加黄米凉糕当甜点！<br>Knife-cut noodle picks: Dongfang (glass kitchen, watch noodle-cutting) or Qizhong (35-year shop, under ¥10/bowl). Add yellow rice cake for dessert!</p><p>孩子可以游泳池放电，或酒店休息。你可以去做个足疗。<br>Kids can swim or rest at hotel. You can get a foot massage.</p></div></div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">晚上 Evening</span><span class="ca">▶</span><div class="cn">大同古城 Datong Old City</div><div class="ce">鼓楼东西街散步+晚饭 Drum Tower streets stroll + dinner</div><div class="cd"><div class="dx"><p>古城鼓楼东西街是晚上最热闹的地方——本地馆子+古城夜景。可以上古城墙走一段（西/北门上去免费），俯瞰鼓楼灯火。<br>Drum Tower East-West streets are liveliest at night — local restaurants + old city lights. Walk up the city wall for free (west/north gate) for a bird's eye view of the lit-up Drum Tower.</p><p>推荐：凯鸽酒楼（风沙鸡+过油肉+菜花+沙棘汁）或 紫泥369粗粮季（黄米凉糕+油法菜面+招牌茄子）。<br>Try: Kaige Restaurant (Sand Chicken + Stir-fried meat + Cauliflower + Sea buckthorn) or Zini 369 (Yellow rice cake + Oat noodle + Signature eggplant).</p></div></div></div>
+</div><div class="df">云冈震撼+古城夜景 Yungang awe + Old City lights · <span class="stars">孩子兴奋度 ★★★★★</span></div></div>
+
+<div class="dp" id="dp-d3"><div class="di"><div class="dd">7/2 周四 Thursday</div><div class="dtt">悬空寺+应县木塔 · Hanging Temple</div></div><div class="cs">
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">08:00</span><span class="ca">▶</span><div class="cn">悬空寺 Hanging Temple</div><div class="ce">挂在悬崖上60米高! Hanging on a cliff 60m high!</div><div class="cb">1500年没掉下来! 1500 years and it hasn't fallen!</div><div class="tg"><span class="t tp">景区¥15 + 登临¥100</span><span class="t ti">包车1-1.5h from Datong</span></div><div class="cd" data-nav="悬空寺"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=39.663200,113.706500&title=悬空寺&content=悬空寺&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到悬空寺 Navigate</a></div>
+<div class="dx"><p>建于北魏晚期，仅由几根木柱支撑。被《时代》杂志评为世界十大最不稳定建筑之一。<br>Built in late Northern Wei, supported by just a few wooden pillars. Named one of TIME's 10 most precarious buildings.</p><p><strong>登临评估 Climbing assessment:</strong><br>· 栈道很窄，有些段落只能侧身通过（有栏杆）Walkway is narrow, some sections sideways only (with railings)<br>· 大孩子 Older kid: 大概率觉得很刺激很酷 Will probably find it thrilling<br>· 小孩子 Younger kid: 如果不怕高就父母牵着上去，怕高就在下面看（从下面仰望也很震撼）If not afraid of heights, go up holding parents' hands. If scared, watching from below is also stunning</p><p>旺季限流，建议提前预约登临票。约1-1.5小时。<br>Limited capacity in peak season. Book climbing tickets ahead. About 1-1.5 hours.</p></div>
+<div class="tip"><div class="tpl">✦ 跟孩子怎么说 TELL THE KIDS</div>「Look up — that entire temple is hanging on the side of a cliff! It's been up there for 1500 years and it hasn't fallen down. The builders wedged wooden beams deep into the rock. Want to walk up there?」</div>
+</div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti f">中午 Noon</span><span class="ca">▶</span><div class="cn">浑源凉粉 Hunyuan Liangfen</div><div class="ce">在原产地吃! Eating it at its birthplace!</div><div class="cd"><div class="dx"><p>悬空寺在浑源县——浑源凉粉的故乡！土豆淀粉做的，Q弹爽滑，配辣椒油和醋。辣椒是香辣不是死辣，小朋友也可以吃。包车司机会带你去当地人吃的店。<br>Hanging Temple is in Hunyuan County — birthplace of Hunyuan liangfen! Potato starch, bouncy and smooth, with chili oil and vinegar. The chili is fragrant not burning — kids can handle it. Driver will take you to a local's spot.</p></div></div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti r">下午 PM</span><span class="ca">▶</span><div class="cn">应县木塔 Yingxian Wooden Pagoda (可选 Optional)</div><div class="ce">67米纯木无钉! 67m tall, zero nails — all wood!</div><div class="tg"><span class="t tp">¥50</span><span class="t ti">悬空寺南边30km 包车顺路 On the way back</span></div><div class="cd" data-nav="应县木塔"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=39.565800,113.177500&title=应县木塔&content=应县木塔&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到应县木塔 Navigate</a></div><div class="dx"><p>只能看一楼+外观，但视觉冲击很强。去不去看当天状态——孩子累了就直接回大同。<br>Can only enter 1F + view exterior, but visually impressive. Decide based on energy — if kids are tired, skip and head back.</p>
+<div class="tip"><div class="tpl">✦ 跟孩子怎么说 TELL THE KIDS</div>「This tower is taller than the Statue of Liberty's pedestal, and it was built almost 1000 years ago with ZERO nails — all wood, all joints.」</div>
+</div></div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti f">晚上 Dinner</span><span class="ca">▶</span><div class="cn">烧麦大餐 Shaomai Feast</div><div class="ce">大同烧麦和南方完全不同! Totally different from southern style!</div><div class="cd"><div class="dx"><p>羊肉馅，皮薄如纸，透过面皮能看到里面馅料。<br>Lamb filling, paper-thin skin — you can see the filling through the wrapper.</p><p>龙聚祥烧麦馆 Longjuxiang: 烧麦 + 糖醋里脊（裹小米过油酥脆）+ 凉粉 + 黄米凉糕 + 沙棘汁。一顿吃遍大同特色。<br>Longjuxiang: Shaomai + Sweet & sour pork (millet-crusted, crispy!) + Liangfen + Yellow rice cake + Sea buckthorn juice. One meal covers all Datong specialties.</p></div></div></div>
+</div><div class="df">上午悬空寺·中午浑源凉粉·晚上烧麦 Hanging Temple·Local noodle·Shaomai feast · <span class="stars">孩子兴奋度 ★★★★★</span></div></div>
+</div>
+
+<div class="sp" id="sp-dt-fd"><div class="fw">
+<div class="fov"><strong>大同必吃 Datong Essentials:</strong> 铜火锅涮羊肉 Copper hot pot lamb · 刀削面 Knife-cut noodle · 烧麦 Shaomai (lamb!) · 浑源凉粉 Hunyuan liangfen · 沙棘汁 Sea buckthorn juice（解腻神器 grease-cutter）<br><br>大同靠近内蒙古，从面食变成涮羊肉，从中原汉族变成游牧鲜卑族——孩子会明显感觉到这个变化。Near Inner Mongolia — food shifts from noodles to lamb, culture from Han to nomadic Xianbei. Kids will feel the difference.</div>
+<div class="prg"><div class="prg-bar"><div class="prg-fill" id="dt-fill"></div></div><div class="prg-txt" id="dt-cnt">0/0</div></div>
+
+<div class="fcat">大同特色 Datong Specialties</div>
+<div class="food" data-fk="df1"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">铜火锅涮羊肉 Copper Hot Pot</div><div class="fen">大同标志性一餐 Datong's signature · 炭火铜锅 Charcoal copper pot</div></div><div class="fa">▶</div></div><div class="food-det"><div class="shop" data-snav="明月轩"><div class="sht"><span class="shn">明月轩 Mingyuexuan</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=40.090400,113.296700&title=明月轩&content=明月轩&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div></div><div class="shop" data-snav="凯鸽火锅"><div class="sht"><span class="shn">凯鸽火锅 Kaige Hot Pot</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=40.088600,113.298200&title=凯鸽火锅&content=凯鸽火锅&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div></div><div class="fnote">靠近内蒙古，羊肉品质极好。蘸麻酱，简单直接。配沙棘汁解腻。Near Inner Mongolia, excellent lamb. Dip in sesame paste. Pair with sea buckthorn juice.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="df2"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">刀削面 Knife-cut Noodle</div><div class="fen">要小碗! Get a small bowl! · 浇头自选 Choose your toppings</div></div><div class="fa">▶</div></div><div class="food-det"><div class="shop" data-snav="东方削面"><div class="sht"><span class="shn">东方削面 Dongfang</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=40.087900,113.299600&title=东方削面&content=东方削面&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div><div class="shd">本地连锁老店，透明厨房可看削面过程 Local chain, glass kitchen — watch noodle-cutting</div></div><div class="shop" data-snav="七中刀削面"><div class="sht"><span class="shn">七中刀削面 Qizhong</span><span class="shp"><¥10/碗</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=40.093500,113.298300&title=七中刀削面&content=七中刀削面&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div><div class="shd">35年老店。配丸子+烧肉+卤蛋+油豆腐 35-year shop. With meatball+braised meat+egg+tofu</div></div><div class="fnote">隐藏搭配：酸菜+卤蛋 Hidden combo: pickled cabbage + braised egg. 加黄米凉糕当甜点 Add yellow rice cake for dessert!</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="df3"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">烧麦 Shaomai</div><div class="fen">羊肉馅，皮薄如纸 Lamb filling, paper-thin skin</div></div><div class="fa">▶</div></div><div class="food-det"><div class="shop" data-snav="龙聚祥"><div class="sht"><span class="shn">龙聚祥 Longjuxiang</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=40.091200,113.293500&title=龙聚祥&content=龙聚祥&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div><div class="shd">老字号。烧麦+糖醋里脊（裹小米过油酥脆）+凉粉+黄米凉糕+沙棘汁 Heritage brand. Full Datong combo meal.</div></div><div class="shop" data-snav="凤临阁"><div class="sht"><span class="shn">凤临阁 Fenglin Pavilion</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=40.091800,113.293200&title=凤临阁&content=凤临阁&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div><div class="shd">高端版 Upscale version</div></div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="df4"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">浑源凉粉 Hunyuan Liangfen</div><div class="fen">入口即化 Melts in your mouth · 在原产地吃! At its birthplace!</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">土豆淀粉做，Q弹爽滑，配辣椒油和醋。香辣不是死辣，小朋友也可以吃。悬空寺那天在浑源县吃最正宗。Potato starch, bouncy smooth, with chili oil & vinegar. Fragrant not burning — kid-friendly. Most authentic when eating in Hunyuan County on Hanging Temple day.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="df5"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">沙棘汁 Sea Buckthorn Juice</div><div class="fen">大同本地酸甜饮料 Local sweet-sour drink · 解腻神器 Grease-cutter</div></div><div class="fa">▶</div></div><div class="food-det"><div class="fnote">酸酸甜甜，配火锅和烧麦都绝配。大同到处都有。Sweet and tart, perfect with hot pot and shaomai. Available everywhere in Datong.</div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="df6"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">黄米凉糕 Yellow Rice Cake</div><div class="fen">很清爽的甜品 Refreshing sweet · 主食甜品 Staple dessert</div></div><div class="fa">▶</div></div><div class="food-det"><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="df7"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">羊杂粉 Lamb Offal Noodle</div><div class="fen">有荤有素，油而不腻 Rich but not greasy</div></div><div class="fa">▶</div></div><div class="food-det"><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="df8"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">莜面 Oat Noodle</div><div class="fen">大同/山西特色 Datong/Shanxi specialty</div></div><div class="fa">▶</div></div><div class="food-det"><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div id="custom-foods-dt"></div>
+<div class="af" id="add-food-dt"><div class="afb" onclick="this.closest('.af').classList.add('open')"><div class="afp">+</div><span>添加新美食 Add new food</span></div><div class="aff"><div class="afr"><label>美食名称</label><input class="afi" id="nfn-dt" placeholder="新发现的大同美食..."></div><div class="afr"><label>说明 (选填)</label><input class="afi" id="nfd-dt"></div><div class="afa"><button class="afc" onclick="this.closest('.af').classList.remove('open')">取消</button><button class="afs" onclick="submitAFCity('dt')">添加</button></div></div></div>
+</div></div>
+</div>
+
+<!-- BEIJING -->
+<div class="cp" id="p-beijing">
+<div class="st"><button class="stb a" data-sub="bj-it">行程 Itinerary</button><button class="stb" data-sub="bj-fd">美食打卡 Food</button></div>
+
+<div class="sp a" id="sp-bj-it">
+<div class="wx" id="wx-beijing"><div class="wx-icon">⏳</div><div class="wx-info"><div class="wx-temp">北京天气加载中... Loading Beijing weather...</div><div class="wx-tip"></div></div></div>
+<div class="dtb"><button class="dt a" data-day="b1">DAY 11</button><button class="dt" data-day="b2">DAY 12</button></div>
+
+<div class="dp a" id="dp-b1"><div class="di"><div class="dd">7/3 周五 Friday</div><div class="dtt">大同→北京 · Final capital!</div></div><div class="cs">
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">上午 AM</span><span class="ca">▶</span><div class="cn">大同闲逛 或 华严寺</div><div class="ce">可选：华严寺 Huayan Temple · 辽金建筑+合掌露齿菩萨</div><div class="tg"><span class="t tp">华严寺 ¥50</span><span class="t ti">可选 Optional</span></div><div class="cd" data-nav="华严寺"><div style="margin:8px 0 4px"><a class="nav-btn" href="https://api.map.baidu.com/marker?location=40.090300,113.291700&title=华严寺&content=华严寺&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()">📍 导航到华严寺 Navigate</a></div><div class="dx"><p>退房前如果有时间可以去华严寺（1小时），或纯闲逛休息收拾行李。看当天状态决定。<br>If time before checkout, visit Huayan Temple (1hr) or just rest and pack. Decide based on energy.</p></div></div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">下午 PM</span><span class="ca">▶</span><div class="cn">高铁去北京 HSR to Beijing</div><div class="ce">大同南→北京北 · ~1h42min · 比很多航班还快!</div><div class="tg"><span class="t tp">¥150-200</span></div><div class="cd"><div class="dx"><p>班次很多。大同到北京只要102分钟，比很多国内航班还快！<br>Frequent trains. Datong to Beijing in just 102 minutes — faster than most domestic flights!</p><p>这是古都走廊的最后一站！<br>This is the FINAL stop of the Ancient Capitals Corridor!</p></div></div></div>
+
+<div class="c" onclick="this.classList.toggle('o')"><span class="cti">晚上 Evening</span><span class="ca">▶</span><div class="cn">胡同散步 + 晚餐 Hutong stroll + Dinner</div><div class="ce">北京只有半天，吃一顿好的+胡同走走</div><div class="cd">
+<div class="dx"><p>北京只有半天时间（明天一早全家去机场）。就吃一顿好的+胡同散散步。<br>Only half a day in Beijing (everyone heads to airport tomorrow morning). Just enjoy a great meal + hutong stroll.</p><p>铜锅涮肉 Copper pot lamb: 聚宝源 Jubaoyuan / 南门涮肉 Nanmen / 北平三兄弟 Beiping Brothers<br>烤鸭 Roast duck: 利群 Liqun（胡同四合院 Hutong courtyard）/ 便宜坊 Bianyifang / 紫光园 Ziguangyuan<br>到时候看心情选！Decide based on mood!</p></div>
+</div></div>
+</div><div class="df">古都走廊最后一站! Final stop! · <span class="stars">孩子兴奋度 ★★★☆☆</span></div></div>
+
+<div class="dp" id="dp-b2"><div class="di"><div class="dd">7/4 周六 Saturday</div><div class="dtt">出发日 · Departure Day</div></div><div class="cs">
+<div class="c"><span class="cti">早上 AM</span><div class="cn">全家去机场 Everyone to airport</div><div class="ce">爸妈飞东京 Parents → Tokyo · 祖父母带孩子飞重庆 Grandparents + kids → Chongqing</div><div class="cb">古都走廊12天圆满结束! 12-day Ancient Capitals Corridor complete!</div></div>
+</div><div class="df">旅途结束 Journey complete! · <span class="stars">★★★★★ 回忆满满 Full of memories</span></div></div>
+</div>
+
+<div class="sp" id="sp-bj-fd"><div class="fw">
+<div class="fov"><strong>北京必吃 Beijing Essentials:</strong> 铜锅涮肉 Copper pot lamb · 烤鸭 Roast duck · 炸酱面 Zhajiang noodle · 门钉肉饼 Doornail meat pie · 护国寺小吃 Huguosi snacks<br><br>北京只有半天，选一样吃好就行！Only half a day — pick ONE great meal!</div>
+<div class="prg"><div class="prg-bar"><div class="prg-fill" id="bj-fill"></div></div><div class="prg-txt" id="bj-cnt">0/0</div></div>
+
+<div class="fcat">北京特色 Beijing Specialties</div>
+<div class="food" data-fk="bf1"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">铜锅涮肉 Copper Pot Lamb</div><div class="fen">和大同类似但更精致 Similar to Datong but more refined</div></div><div class="fa">▶</div></div><div class="food-det"><div class="shop" data-snav="聚宝源"><div class="sht"><span class="shn">聚宝源 Jubaoyuan</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=39.893900,116.395200&title=聚宝源&content=聚宝源&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div></div><div class="shop" data-snav="南门涮肉"><div class="sht"><span class="shn">南门涮肉 Nanmen</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=39.899400,116.407300&title=南门涮肉&content=南门涮肉&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div></div><div class="shop" data-snav="北平三兄弟"><div class="sht"><span class="shn">北平三兄弟 Beiping Brothers</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=39.937200,116.407800&title=北平三兄弟&content=北平三兄弟&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div></div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="bf2"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">烤鸭 Roast Duck</div><div class="fen">北京必吃 Beijing must-eat</div></div><div class="fa">▶</div></div><div class="food-det"><div class="shop" data-snav="利群烤鸭"><div class="sht"><span class="shn">利群 Liqun</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=39.898600,116.404200&title=利群烤鸭&content=利群烤鸭&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div><div class="shd">胡同四合院里的烤鸭 Duck in a hutong courtyard. 氛围绝佳 Amazing atmosphere</div></div><div class="shop" data-snav="便宜坊"><div class="sht"><span class="shn">便宜坊 Bianyifang</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=39.894500,116.413700&title=便宜坊&content=便宜坊&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div></div><div class="shop" data-snav="紫光园"><div class="sht"><span class="shn">紫光园 Ziguangyuan</span><a class="shop-nav" href="https://api.map.baidu.com/marker?location=39.947300,116.410500&title=紫光园&content=紫光园&output=html&coord_type=gcj02&src=webapp.guide" onclick="event.stopPropagation()" title="百度导航 Baidu Maps">📍</a></div></div><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="bf3"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">炸酱面 Zhajiang Noodle</div><div class="fen">北京经典 Beijing classic · 肉酱拌面 Meat sauce noodle</div></div><div class="fa">▶</div></div><div class="food-det"><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div class="food" data-fk="bf4"><div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">门钉肉饼 Doornail Meat Pie</div><div class="fen">圆鼓鼓像门钉 Round like a doornail</div></div><div class="fa">▶</div></div><div class="food-det"><div class="mn"><div class="mnl">我的打卡</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div></div>
+
+<div id="custom-foods-bj"></div>
+<div class="af" id="add-food-bj"><div class="afb" onclick="this.closest('.af').classList.add('open')"><div class="afp">+</div><span>添加新美食 Add new food</span></div><div class="aff"><div class="afr"><label>美食名称</label><input class="afi" id="nfn-bj" placeholder="新发现的北京美食..."></div><div class="afr"><label>说明 (选填)</label><input class="afi" id="nfd-bj"></div><div class="afa"><button class="afc" onclick="this.closest('.af').classList.remove('open')">取消</button><button class="afs" onclick="submitAFCity('bj')">添加</button></div></div></div>
+</div></div>
+</div>
+</div>
+
+<script>
+// Tab switching
+document.querySelectorAll('.ctb').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.ctb').forEach(x=>x.classList.remove('a'));document.querySelectorAll('.cp').forEach(x=>x.classList.remove('a'));b.classList.add('a');document.getElementById('p-'+b.dataset.city).classList.add('a')})});
+document.querySelectorAll('.stb').forEach(t=>{t.addEventListener('click',()=>{const p=t.closest('.cp');p.querySelectorAll('.stb').forEach(x=>x.classList.remove('a'));p.querySelectorAll('.sp').forEach(x=>x.classList.remove('a'));t.classList.add('a');document.getElementById('sp-'+t.dataset.sub).classList.add('a')})});
+document.querySelectorAll('.dt').forEach(t=>{t.addEventListener('click',()=>{const p=t.closest('.sp');p.querySelectorAll('.dt').forEach(x=>x.classList.remove('a'));p.querySelectorAll('.dp').forEach(x=>x.classList.remove('a'));t.classList.add('a');document.getElementById('dp-'+t.dataset.day).classList.add('a')})});
+
+// Food checklist with localStorage
+let S={};try{S=JSON.parse(localStorage.getItem('fc6')||'{}')}catch(e){}
+
+function expandF(top){top.closest('.food').classList.toggle('exp')}
+function checkF(ck){
+  const f=ck.closest('.food'),k=f.dataset.fk;
+  f.classList.toggle('chk');
+  if(f.classList.contains('chk')){S[k]=S[k]||{c:1,n:[]};S[k].c=1;if(!f.classList.contains('exp'))f.classList.add('exp')}
+  else{if(S[k])S[k].c=0}
+  save();updAllPrg();
+}
+function addN(btn){
+  const f=btn.closest('.food'),k=f.dataset.fk;
+  const ni=btn.previousElementSibling,v=ni.value.trim();if(!v)return;
+  S[k]=S[k]||{c:0,n:[]};S[k].n.push(v);S[k].c=1;
+  f.classList.add('chk');
+  renderN(f,k);ni.value='';save();updAllPrg();
+}
+function delN(btn,k,i){
+  S[k].n.splice(i,1);if(!S[k].n.length&&!S[k].c)delete S[k];
+  renderN(btn.closest('.food'),k);save();updAllPrg();
+}
+function renderN(f,k){
+  const list=f.querySelector('.me-list');list.innerHTML='';
+  if(S[k]&&S[k].n){S[k].n.forEach((t,i)=>{
+    const d=document.createElement('div');d.className='me';
+    d.innerHTML='<span class="met">'+t+'</span><button class="med" onclick="delN(this,\''+k+'\','+i+')">x</button>';
+    list.appendChild(d);
+  })}
+}
+function save(){try{localStorage.setItem('fc6',JSON.stringify(S))}catch(e){}}
+function updPrgFor(prefix,fillId,cntId){
+  const all=document.querySelectorAll('[id^="sp-'+prefix+'"] .food[data-fk]');
+  let done=0;all.forEach(f=>{if(f.classList.contains('chk'))done++});
+  const el=document.getElementById(fillId),ct=document.getElementById(cntId);
+  if(el)el.style.width=(all.length?Math.round(done/all.length*100):0)+'%';
+  if(ct)ct.textContent=done+'/'+all.length+' 已吃 eaten';
+}
+function updAllPrg(){
+  updPrgFor('xian-fd','xf-fill','xf-cnt');
+  updPrgFor('ly-fd','ly-fill','ly-cnt');
+  updPrgFor('kf-fd','kf-fill','kf-cnt');
+  updPrgFor('dt-fd','dt-fill','dt-cnt');
+  updPrgFor('bj-fd','bj-fill','bj-cnt');
+}
+// Restore state
+document.querySelectorAll('.food[data-fk]').forEach(f=>{
+  const k=f.dataset.fk;
+  if(S[k]&&S[k].c){f.classList.add('chk')}
+  if(S[k]&&S[k].n&&S[k].n.length){renderN(f,k)}
+});
+// Restore custom foods for all cities
+['xian','ly','kf','dt','bj'].forEach(city=>{
+  const key='_custom_'+city;
+  if(S[key]){S[key].forEach(cf=>{createCF(city,cf.name,cf.desc,cf.fk)})}
+});
+updAllPrg();
+
+// Custom food - per city
+let cid=200;
+function submitAFCity(city){
+  const name=document.getElementById('nfn-'+city).value.trim();if(!name)return;
+  const desc=document.getElementById('nfd-'+city).value.trim();
+  cid++;const fk=city+'c'+cid;
+  const key='_custom_'+city;
+  S[key]=S[key]||[];S[key].push({name,desc,fk});
+  createCF(city,name,desc,fk);
+  document.getElementById('add-food-'+city).classList.remove('open');
+  document.getElementById('nfn-'+city).value='';document.getElementById('nfd-'+city).value='';
+  save();updAllPrg();
+}
+// Xi'an uses old IDs for backward compat
+function cancelAF(){document.getElementById('add-food').classList.remove('open');document.getElementById('nfn').value='';document.getElementById('nfd').value=''}
+function submitAF(){
+  const name=document.getElementById('nfn').value.trim();if(!name)return;
+  const desc=document.getElementById('nfd').value.trim();
+  cid++;const fk='xfc'+cid;
+  const key='_custom_xian';
+  S[key]=S[key]||[];S[key].push({name,desc,fk});
+  createCF('xian',name,desc,fk);cancelAF();save();updAllPrg();
+}
+function createCF(city,name,desc,fk){
+  const containerId=city==='xian'?'custom-foods':'custom-foods-'+city;
+  const container=document.getElementById(containerId);if(!container)return;
+  const h=document.createElement('div');h.className='food exp';h.dataset.fk=fk;
+  h.innerHTML='<div class="food-top" onclick="expandF(this)"><div class="ck" onclick="event.stopPropagation();checkF(this)"></div><div class="food-info"><div class="fn">'+name+' <span class="ctag">自定义 Custom</span></div>'+(desc?'<div class="fen">'+desc+'</div>':'')+'</div><div class="fa">▶</div><button class="fdel" onclick="event.stopPropagation();delCF(this,\''+city+'\')" title="删除">x</button></div><div class="food-det"><div class="mn"><div class="mnl">我的打卡 My check-ins</div><div class="me-list"></div><div class="nir"><input class="ni" placeholder="在哪吃的..."><button class="nb" onclick="addN(this)">添加</button></div></div></div>';
+  container.appendChild(h);
+  if(S[fk]&&S[fk].c)h.classList.add('chk');
+  if(S[fk]&&S[fk].n)renderN(h,fk);
+}
+function delCF(btn,city){
+  const f=btn.closest('.food'),fk=f.dataset.fk;
+  const key='_custom_'+city;
+  S[key]=(S[key]||[]).filter(x=>x.fk!==fk);
+  delete S[fk];f.remove();save();updAllPrg();
+}
+// Real-time weather via Open-Meteo (free, no API key)
+const WX_CITIES=[
+  {id:'wx-xian',name:'西安 Xi\'an',lat:34.26,lon:108.94},
+  {id:'wx-luoyang',name:'洛阳 Luoyang',lat:34.62,lon:112.45},
+  {id:'wx-kaifeng',name:'开封 Kaifeng',lat:34.80,lon:114.31},
+  {id:'wx-datong',name:'大同 Datong',lat:40.09,lon:113.30},
+  {id:'wx-beijing',name:'北京 Beijing',lat:39.90,lon:116.40}
+];
+const WX_CODES={0:'☀️ 晴 Clear',1:'🌤️ 多云 Mostly clear',2:'⛅ 多云 Partly cloudy',3:'☁️ 阴 Overcast',45:'🌫️ 雾 Foggy',48:'🌫️ 雾凇 Rime fog',51:'🌦️ 小雨 Light drizzle',53:'🌦️ 中雨 Moderate drizzle',55:'🌧️ 大雨 Dense drizzle',61:'🌧️ 小雨 Slight rain',63:'🌧️ 中雨 Moderate rain',65:'🌧️ 大雨 Heavy rain',71:'🌨️ 小雪 Slight snow',73:'🌨️ 中雪 Moderate snow',75:'❄️ 大雪 Heavy snow',80:'🌦️ 阵雨 Rain showers',81:'🌧️ 中阵雨 Moderate showers',82:'⛈️ 暴雨 Violent showers',95:'⛈️ 雷暴 Thunderstorm',96:'⛈️ 冰雹雷暴 Hail thunderstorm',99:'⛈️ 强冰雹 Heavy hail'};
+function wxIcon(code){const c=WX_CODES[code]||'🌡️ 未知';return c.split(' ')[0]}
+function wxDesc(code){const c=WX_CODES[code]||'未知 Unknown';return c.substring(c.indexOf(' ')+1)}
+function wxTip(temp,feels,humidity){
+  let tips=[];
+  if(temp>=35)tips.push('极热! 必备防晒+多喝水 Extremely hot! Sunscreen+hydrate');
+  else if(temp>=30)tips.push('炎热 注意防晒 Hot, wear sunscreen');
+  else if(temp>=25)tips.push('温暖 Warm & comfortable');
+  else if(temp>=18)tips.push('凉爽 带薄外套 Cool, bring light jacket');
+  else tips.push('较冷 需要外套 Cold, need jacket');
+  if(Math.abs(feels-temp)>=3)tips.push('体感'+(feels>temp?'更热':'更冷')+' Feels '+(feels>temp?'hotter':'colder')+' than actual');
+  if(humidity>=75)tips.push('湿度高 备折叠伞 High humidity, pack umbrella');
+  return tips.join(' · ');
+}
+const WX_FALLBACK={
+  'wx-xian':{icon:'☀️',t:'28-38',desc:'晴/多云 Sunny/Cloudy',tip:'6月底典型天气 Typical late June · 炎热干燥 Hot & dry · 必备防晒+帽子+墨镜 Sunscreen+hat+sunglasses · 多喝水 Stay hydrated'},
+  'wx-luoyang':{icon:'🌤️',t:'25-36',desc:'多云 Partly cloudy',tip:'6月底典型天气 · 闷热 Humid · 古墓博物馆地下天然阴凉 Tomb museum = natural AC · 备折叠伞 Pack umbrella'},
+  'wx-kaifeng':{icon:'🌡️',t:'26-37',desc:'晴热 Hot & sunny',tip:'6月底典型天气 · 最热一站! Hottest stop · 清明上河园户外整天 All-day outdoor · 必带水+防晒+帽子 Water+sunscreen+hat'},
+  'wx-datong':{icon:'🌬️',t:'18-30',desc:'凉爽 Cool',tip:'7月初典型天气 · 明显凉快! Noticeably cooler · 晚间需薄外套 Light jacket at night · 悬空寺山区更凉 Mountain area cooler'},
+  'wx-beijing':{icon:'⛅',t:'24-35',desc:'多云/雷阵雨 Cloudy/Storms',tip:'7月初典型天气 · 闷热+可能雷阵雨 Hot+possible storms · 带伞 Pack umbrella · 胡同傍晚散步最佳 Hutong strolls best at dusk'}
+};
+WX_CITIES.forEach(city=>{
+  const url='https://api.open-meteo.com/v1/forecast?latitude='+city.lat+'&longitude='+city.lon+'&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code&timezone=Asia/Shanghai';
+  fetch(url).then(r=>r.json()).then(d=>{
+    const el=document.getElementById(city.id);if(!el||!d.current)throw 'no data';
+    const t=Math.round(d.current.temperature_2m);
+    const f=Math.round(d.current.apparent_temperature);
+    const h=Math.round(d.current.relative_humidity_2m);
+    const wc=d.current.weather_code;
+    el.querySelector('.wx-icon').textContent=wxIcon(wc);
+    el.querySelector('.wx-temp').innerHTML=city.name+' <strong>'+t+'°C</strong> · 体感 Feels like <strong>'+f+'°C</strong> · '+wxDesc(wc);
+    el.querySelector('.wx-tip').textContent=wxTip(t,f,h)+' · 湿度 Humidity '+h+'%';
+    el.style.background='#E8F4F8';
+  }).catch(()=>{
+    const el=document.getElementById(city.id);if(!el)return;
+    const fb=WX_FALLBACK[city.id];
+    el.querySelector('.wx-icon').textContent=fb.icon;
+    el.querySelector('.wx-temp').innerHTML=city.name+' · 历史均温 Avg <strong>'+fb.t+'°C</strong> · '+fb.desc;
+    el.querySelector('.wx-tip').textContent=fb.tip;
+    el.style.background='#F5F0E5';
+  });
+});
+
+// Map navigation - Gaode (Amap) URI
+// Coordinates in GCJ-02 (China standard), lon,lat format for Amap URI
+const NAV={
+// === XI'AN SPOTS ===
+'永兴坊':'108.960440,34.265920,永兴坊',
+'城墙南门':'108.940780,34.253350,西安城墙永宁门',
+'兵马俑':'109.278160,34.384720,秦始皇兵马俑博物院',
+'铜车马博物馆':'109.277800,34.384500,铜车马博物馆',
+'大唐不夜城':'108.964000,34.218600,大唐不夜城',
+'小南门早市':'108.936500,34.249500,小南门早市',
+'碑林':'108.945100,34.253700,碑林博物馆',
+'书院门':'108.943500,34.254800,书院门',
+'建国门综合市场':'108.960300,34.258600,建国门综合市场',
+'东新街':'108.952800,34.263800,东新街夜市',
+// XI'AN RESTAURANTS
+'子午路张记':'108.943300,34.237500,子午路张记肉夹馍翠华路店',
+'秦豫肉夹馍':'108.946700,34.252400,秦豫肉夹馍',
+'东关吉祥':'108.962900,34.261200,东关吉祥肉夹馍',
+'老刘家泡馍':'108.942300,34.265800,老刘家牛羊肉泡馍',
+'郭老三面庄':'108.943600,34.237800,郭老三面庄',
+'西安饭庄':'108.946600,34.260200,西安饭庄钟楼店',
+'醉长安':'108.944200,34.253900,醉长安',
+'顺城巷':'108.942000,34.257000,顺城巷',
+// === LUOYANG ===
+'白马寺':'112.568600,34.724300,白马寺',
+'古墓博物馆':'112.397100,34.738200,洛阳古墓博物馆',
+'洛阳博物馆':'112.448500,34.618800,洛阳博物馆',
+'西工小街':'112.451700,34.670600,西工小街',
+'鼓楼夜市开封':'114.354500,34.799300,开封鼓楼夜市',
+'管记水席':'112.457800,34.668900,管记水席老店',
+// === KAIFENG ===
+'清明上河园':'114.378500,34.812600,清明上河园',
+'黄家包子':'114.352100,34.798500,黄家包子铺',
+// === DATONG ===
+'云冈石窟':'113.132800,40.111400,云冈石窟',
+'悬空寺':'113.706500,39.663200,悬空寺',
+'应县木塔':'113.177500,39.565800,应县木塔',
+'华严寺':'113.291700,40.090300,华严寺',
+'明月轩':'113.296700,40.090400,明月轩铜火锅',
+'凯鸽火锅':'113.298200,40.088600,凯鸽火锅',
+'龙聚祥':'113.293500,40.091200,龙聚祥烧麦馆',
+'凤临阁':'113.293200,40.091800,凤临阁',
+'东方削面':'113.299600,40.087900,东方削面',
+'七中刀削面':'113.298300,40.093500,七中刀削面',
+// === BEIJING ===
+'聚宝源':'116.395200,39.893900,聚宝源',
+'南门涮肉':'116.407300,39.899400,南门涮肉',
+'北平三兄弟':'116.407800,39.937200,北平三兄弟',
+'利群烤鸭':'116.404200,39.898600,利群烤鸭店',
+'便宜坊':'116.413700,39.894500,便宜坊',
+'紫光园':'116.410500,39.947300,紫光园'
+};
+function navUrl(key){const c=NAV[key];if(!c)return null;const p=c.split(',');return'https://api.map.baidu.com/marker?location='+p[1]+','+p[0]+'&title='+encodeURIComponent(p[2])+'&content='+encodeURIComponent(p[2])+'&output=html&coord_type=gcj02&src=webapp.guide';}
+function navHtml(key,label){const u=navUrl(key);if(!u)return'';return'<a class="nav-btn" href="'+u+'" target="_blank" onclick="event.stopPropagation()">📍 '+(label||'导航 Navigate')+'</a>';}
+function shopNavHtml(key){const u=navUrl(key);if(!u)return'';return'<a class="shop-nav" href="'+u+'" target="_blank" title="百度导航 Amap">📍</a>';}
+
+// Service Worker for offline use
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+</script>
+</body>
+</html>
