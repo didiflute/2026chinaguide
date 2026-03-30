@@ -1,4 +1,4 @@
-const CACHE='guduzoulang-v1';
+const CACHE='guduzoulang-v20250329';
 const URLS=[
   './',
   './index.html',
@@ -13,6 +13,15 @@ self.addEventListener('activate',e=>{
   self.clients.claim();
 });
 self.addEventListener('fetch',e=>{
+  // Network-first for index.html — always get fresh version
+  if(e.request.url.includes('index.html')||e.request.url.endsWith('/')){
+    e.respondWith(fetch(e.request).then(resp=>{
+      if(resp.ok){const c=resp.clone();caches.open(CACHE).then(cache=>cache.put(e.request,c))}
+      return resp;
+    }).catch(()=>caches.match(e.request)));
+    return;
+  }
+  // Cache-first for everything else (fonts, etc.)
   e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(resp=>{
     if(resp.ok){const c=resp.clone();caches.open(CACHE).then(cache=>cache.put(e.request,c))}
     return resp;
